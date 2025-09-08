@@ -18,6 +18,9 @@ app.use(express.json());
 app.use(methodOverride('_method'));
 app.engine('ejs', ejsMate);
 
+const listings = require('./routes/listing');
+app.use('/', listings);
+
 async function main() {
     await mongoose.connect('mongodb://localhost:27017/WanderList');
     console.log('Connected to MongoDB');
@@ -70,54 +73,11 @@ const validateReview = (req, res, next) => {
 };
 
 
-// Index Route
-app.get("/listings", wrapAsync(async(req, res) => {
-    const allListings = await Listing.find({});
-    res.render("listings/index.ejs", { allListings });
-})
-);
 
-// New Route
-app.get("/listings/new", (req, res) => {
-    res.render("listings/new.ejs");
-});
-
-
-// Create Route
-app.post(
-    "/listings", validateListing, wrapAsync(async (req, res, next) => {
-      let result = listingSchema.validate(req.body);
-      if (result.error) {
-        throw new ExpressError(result.error.message, 400);
-      }
-      const newListing = new Listing(req.body.listing);
-      await newListing.save();
-      res.redirect("/listings");
-    })
-);
   
   
 
-// Edit Route
-app.get("/listings/:id/edit", wrapAsync(async(req, res) => {
-    const listing = await Listing.findById(req.params.id);
-    res.render("listings/edit.ejs", { listing });
-}));
 
-// Update Route
-app.put("/listings/:id", validateListing, wrapAsync(async(req, res) => {
-    const { id } = req.params;
-    await Listing.findByIdAndUpdate(id, {...req.body.listing});
-    res.redirect(`/listings/${id}`);   
-})
-);
-
-// Delete Route
-app.delete("/listings/:id", wrapAsync(async(req, res) => {
-    const { id } = req.params;
-    await Listing.findByIdAndDelete(id);
-    res.redirect("/listings");
-}));
 
 // Reviews
 // Post Route for Reviews
@@ -139,11 +99,7 @@ app.delete("/listings/:id/reviews/:reviewId", wrapAsync(async(req, res) => {
 }));    
 
 
-// Show Route
-app.get("/listings/:id", wrapAsync(async(req, res) => {
-    const listing = await Listing.findById(req.params.id).populate('reviews');
-    res.render("listings/show.ejs", { listing });
-})); 
+
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404));
