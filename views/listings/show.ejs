@@ -47,6 +47,10 @@
                 </form>
                 <hr>
                 <p><b>All Reviews:</b></p>
+                <% if(listing.reviews.length === 0) { %>
+                    <p>No reviews yet. Be the first to review!</p>
+                <% } %>
+
                 <div class="row">
                     <% for(let review of listing.reviews) { %>
                         <div class="card col-5 mb-3 mx-auto">
