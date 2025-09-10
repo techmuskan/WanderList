@@ -4,8 +4,20 @@ const mongoose = require('mongoose');
 const path = require('path');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
-
+const session = require('express-session'); 
 const ExpressError = require('./utils/ExpressError');
+const sessionOptions = {
+    secret : "mysupersecretcode",
+    resave : false,
+    saveUninitialized : true,
+    cookie : {
+        httpOnly : true,
+        expires : Date.now() + 1000 * 60 * 60 * 24 * 7, // 1 week
+        maxAge : 1000 * 60 * 60 * 24 * 7
+    }
+};
+const flash = require('connect-flash');
+
 
 // VIEW ENGINE SETUP
 app.set('view engine', 'ejs');
@@ -23,18 +35,27 @@ mongoose.connect("mongodb://127.0.0.1:27017/WanderList")
     .then(() => console.log("✅ MongoDB Connected"))
     .catch(err => console.error("❌ MongoDB Error:", err));
 
+// HOME ROUTE
+app.get('/', (req, res) => {
+    res.send("Hello I'm a server");
+});
+
+app.use(session(sessionOptions));
+app.use(flash());
+
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    console.log(res.locals.success);
+    console.log(res.locals.error);
+    next();
+});
+
 // ROUTES
 const listings = require('./routes/listing');
 app.use('/listings', listings);
 const reviews = require('./routes/review');
 app.use('/listings/:id/reviews', reviews);
-
-app.get('/', (req, res) => {
-    res.send("Hello I'm a server");
-});
-
-
-
 
 
 // 404 Handler
@@ -48,7 +69,6 @@ app.use((err, req, res, next) => {
     if (!err.message) err.message = "Something went wrong!";
     res.status(statusCode).render('error', { err });  // 👈 no "listings/"
 });
-
 
 app.listen(8080, () => {
     console.log("🚀 Server started on http://localhost:8080");
