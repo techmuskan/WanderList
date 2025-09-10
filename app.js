@@ -43,8 +43,10 @@ app.get('/', (req, res) => {
     res.send("Hello I'm a server");
 });
 
+
 app.use(session(sessionOptions));
 app.use(flash());
+
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -61,10 +63,12 @@ app.use((req, res, next) => {
 });
 
 // ROUTES
-const listings = require('./routes/listing');
-app.use('/listings', listings);
-const reviews = require('./routes/review');
-app.use('/listings/:id/reviews', reviews);
+const listingRouter = require('./routes/listing');
+app.use('/listings', listingRouter);
+const reviewRouter = require('./routes/review');
+app.use('/listings/:id/reviews', reviewRouter);
+const usersRouter = require('./routes/user');
+app.use('/', usersRouter);
 
 
 // 404 Handler
