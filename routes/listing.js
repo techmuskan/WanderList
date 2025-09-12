@@ -29,7 +29,7 @@ router.get("/new", isLoggedIn, (req, res) => {
 
 // Show Route
 router.get("/:id", wrapAsync(async (req, res) => {
-    const listing = await Listing.findById(req.params.id).populate('reviews');
+    const listing = await Listing.findById(req.params.id).populate('reviews').populate('owner');
     if (!listing) {
         req.flash('error', 'Cannot find that listing!');
         return res.redirect('/listings');
@@ -41,6 +41,7 @@ router.get("/:id", wrapAsync(async (req, res) => {
 // Create Route
 router.post("/", isLoggedIn, validateListing, wrapAsync(async (req, res) => {
     const newListing = new Listing(req.body.listing);
+    newListing.owner = req.user._id;  // Associate the listing with the logged-in user
     await newListing.save();
     req.flash('success', 'Successfully made a new listing!');  
     res.redirect("/listings");
@@ -59,6 +60,11 @@ router.get("/:id/edit", isLoggedIn, wrapAsync(async (req, res) => {
 // Update Route
 router.put("/:id", isLoggedIn, validateListing,  wrapAsync(async (req, res) => {
     const { id } = req.params;
+    let listing = await Listing.findById(id);
+    if(!currentUser && listing.owner._id.equals(res.locals.currentUser._id)) {
+        req.flash('error', 'You do not have permission to do that!');
+        return res.redirect(`/listings/${id}`);
+    }
     const updatedListing = await Listing.findByIdAndUpdate(id, { ...req.body.listing }, { runValidators: true });
     if (!updatedListing) throw new ExpressError("Listing not found", 404);
     req.flash('success', 'Successfully updated listing!');

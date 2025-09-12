@@ -12,6 +12,7 @@ const sessionOptions = {
     saveUninitialized : true,
     cookie : {
         httpOnly : true,
+        secure: process.env.NODE_ENV === "production",
         expires : Date.now() + 1000 * 60 * 60 * 24 * 7, // 1 week
         maxAge : 1000 * 60 * 60 * 24 * 7
     }
@@ -57,8 +58,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
-    console.log(res.locals.success);
-    console.log(res.locals.error);
+    res.locals.currentUser = req.user || null;  // <--- important fallback
     next();
 });
 

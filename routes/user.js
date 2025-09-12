@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const user = require('../models/user');
+const User = require('../models/user');   // Capitalized
 const wrapAsync = require('../utils/wrapAsync');
 const passport = require('passport');
-
+const { saveRedirectUrl } = require('../middleware');
 
 // Register Route
 router.get('/signup', (req, res) => {
@@ -11,19 +11,22 @@ router.get('/signup', (req, res) => {
 });
 
 // Signup Logic
-router.post('/signup', wrapAsync(async (req, res) => {
-    try{
-    const {username, email, password} = req.body;
-    const newUser = new user({username, email});
-    const registeredUser = await user.register(newUser, password);
-    console.log(registeredUser);
-    req.flash('success', 'Welcome to WanderList!');
-    res.redirect('/listings');
-    } catch(e) {
-    req.flash('error', e.message);
-    res.redirect('/signup');
-}})
-);
+router.post('/signup', wrapAsync(async (req, res, next) => {
+    try {
+        const { username, email, password } = req.body;
+        const newUser = new User({ username, email });
+        const registeredUser = await User.register(newUser, password);
+        console.log(registeredUser);
+        req.login(registeredUser, err => {
+            if (err) return next(err);
+            req.flash('success', 'Welcome to WanderList!');
+            res.redirect(res.locals.redirectUrl || '/listings');
+        });
+    } catch (e) {
+        req.flash('error', e.message);
+        res.redirect('/signup');
+    }
+}));
 
 // Login Route
 router.get('/login', (req, res) => {
@@ -32,25 +35,23 @@ router.get('/login', (req, res) => {
 
 // Login Logic
 router.post(
-    '/login', 
-    passport.authenticate(
-        'local', 
-        {
-            failureRedirect: '/login',
-            failureFlash: true
-        }
-    ),
-    async (req, res) => {   
-        req.flash('success', 'Welcome back!');
-        res.redirect('/listings');
+    '/login',
+    saveRedirectUrl,
+    passport.authenticate('local', {
+        failureRedirect: '/login',
+        failureFlash: true
+    }),
+    (req, res) => {
+        req.flash('success', 'Welcome back to Wanderlist!');
+        res.redirect(res.locals.redirectUrl || '/listings');
     }
 );
 
 // Logout Route
 router.get('/logout', (req, res, next) => {
-    req.logout(function(err) {
-        if (err) { return next(err); }
-        req.flash('success', "Goodbye!");
+    req.logout(err => {
+        if (err) return next(err);
+        req.flash('success', 'Goodbye!');
         res.redirect('/listings');
     });
 });
