@@ -1,3 +1,7 @@
+if( process.env.NODE_ENV != "production"){
+    require('dotenv').config()
+};
+
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
@@ -75,6 +79,7 @@ app.use('/', usersRouter);
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404));
 });
+
 
 // Error Handler
 app.use((err, req, res, next) => {

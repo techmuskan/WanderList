@@ -26,11 +26,29 @@ module.exports.show = async (req, res) => {
 };
 
 module.exports.create = async (req, res) => {
-    const newListing = new Listing(req.body.listing);
-    newListing.owner = req.user._id;
-    await newListing.save();
-    req.flash('success', 'Successfully made a new listing!');
-    res.redirect("/listings");
+    try {
+        // Check if listing exists in body
+        if (!req.body.listing) throw new Error("Listing data missing!");
+
+        const listing = new Listing(req.body.listing); // title, desc, price, location, country
+
+        // If image is uploaded
+        if (req.file) {
+            listing.image = {
+                url: req.file.path,       // or req.file.path/cloudinary url
+                filename: req.file.filename
+            };
+        }
+
+        listing.owner = req.user._id;   // if using login
+
+        await listing.save();
+        req.flash('success', 'Listing created successfully!');
+        res.redirect(`/listings`);
+    } catch (e) {
+        req.flash('error', e.message);
+        res.redirect('/listings/new');
+    }
 };
 
 module.exports.edit = async (req, res) => {
