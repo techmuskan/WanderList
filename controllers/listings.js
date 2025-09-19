@@ -22,6 +22,7 @@ module.exports.show = async (req, res) => {
         req.flash('error', 'Cannot find that listing!');
         return res.redirect('/listings');
     }
+
     res.render("listings/show.ejs", { listing });
 };
 
@@ -53,15 +54,50 @@ module.exports.create = async (req, res) => {
 
 module.exports.edit = async (req, res) => {
     const listing = await Listing.findById(req.params.id);
-    res.render("listings/edit.ejs", { listing });
+
+    if (!listing) {
+        req.flash('error', 'Listing not found!');
+        return res.redirect('/listings');
+    }
+
+    // Cloudinary resize transformation for edit page
+    let originalImageURL = null;
+    if (listing.image && listing.image.url) {
+        // Resize via Cloudinary: width 400px, auto height, keep quality
+        // Add other transformations if needed (e.g., quality, format)
+        originalImageURL = listing.image.url.replace(
+            '/upload',
+            '/upload/w_250,h_300'
+        );
+    }
+
+    res.render("listings/edit.ejs", { listing, originalImageURL });
 };
 
 module.exports.update = async (req, res) => {
     const { id } = req.params;
-    const updatedListing = await Listing.findByIdAndUpdate(id, { ...req.body.listing }, { runValidators: true, new: true });
+
+    const updatedListing = await Listing.findByIdAndUpdate(
+        id,
+        { ...req.body.listing },
+        { runValidators: true, new: true }
+    );
+
+    if (!updatedListing) {
+        req.flash('error', 'Listing not found!');
+        return res.redirect('/listings');
+    }
+
+    if (req.file) {
+        const { path: url, filename } = req.file;
+        updatedListing.image = { url, filename };  // replace old image
+        await updatedListing.save();
+    }
+
     req.flash('success', 'Successfully updated listing!');
     res.redirect(`/listings/${id}`);
-}
+};
+
 
 module.exports.delete = async (req, res) => {
     const { id } = req.params;

@@ -18,7 +18,7 @@ router.get("/new", isLoggedIn, saveRedirectUrl, listingController.newFormRender)
 
 router.route("/:id")
 .get(wrapAsync(listingController.show)) // Show Route - populate owner and reviews
-.put(isLoggedIn, isOwner, validateListing, wrapAsync(listingController.update)) // Update Route
+.put(isLoggedIn, isOwner,upload.single("listing[image]"), validateListing, wrapAsync(listingController.update)) // Update Route
 .delete(isLoggedIn, isOwner, wrapAsync(listingController.delete)); // Delete Route
 
 // Edit Route

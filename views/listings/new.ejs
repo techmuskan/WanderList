@@ -16,15 +16,10 @@
             <textarea name="listing[description]" placeholder="Enter Description" type="text" class="form-control" required ></textarea>
             <div class="invalid-feedback"> Enter a short description. </div>
         </div>
-        <!-- <div class="mb-3">
-            <label for="image" class="form-label"><b>Enter image URL: </b></label><br>
-            <input name="listing[image][url]" id="imageUrlInput" placeholder="Enter Image URL" type="text" class="form-control">
-            <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 100%; margin-top: 10px;">
-        </div> -->
         <div class="mb-3">
             <label for="image" class="form-label"><b>Upload Listing Image: </b></label><br>
-            <input id="imageUrlInput" name="listing[image]" type="file" class="form-control">
-            <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 100%; margin-top: 10px;">
+            <input id="imageUrlInput" name="listing[image]" type="file" class="form-control" required>
+            <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 100%; margin-top: 10px; ">
         </div>
         <div class="row">
             <div class="mb-3 col-md-4">
