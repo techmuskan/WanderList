@@ -13,14 +13,13 @@
         <% } %>
         
         <div class="card-body">
-                <p><i>Owned by <%= listing.owner ? listing.owner.username : "Anonymous" %></i></p>
-                <p><%= listing.description %></p>
-                <p>&#8377;<%= listing.price.toLocaleString("en-IN") %></p>
-                <p><%= listing.location %></p>
-                <p><%= listing.country %></p>
+            <p><i>Owned by <%= listing.owner?.username || "Anonymous" %></i></p>
+            <p><%= listing.description %></p>
+            <p>&#8377;<%= listing.price.toLocaleString("en-IN") %></p>
+            <p><%= listing.location %></p>
+            <p><%= listing.country %></p>
             
-
-            
+            <% if(currentUser && listing.owner._id.equals(currentUser._id)) { %>
             <div class="btns my-2">
                 <form action="/listings/<%= listing._id %>/edit" method="get" class="d-inline">
                     <button class="btn btn-dark px-md-5">Update</button>
@@ -29,9 +28,11 @@
                     <button class="btn btn-dark px-md-5">Delete</button>
                 </form>
             </div>
+            <% } %>
             
 
             <hr>
+            <% if(currentUser) {%>
             <h4>Leave a Review:</h4>
             <form method="POST" action="/listings/<%= listing._id %>/reviews" novalidate class="needs-validation">
                 <div class="mb-3 mt-3">
@@ -47,6 +48,7 @@
                 <button class="btn btn-outline-dark">Submit</button>
             </form>
             <hr>
+            <% } %>
 
             <h5>All Reviews:</h5>
             <% if(listing.reviews.length === 0) { %>
@@ -57,7 +59,7 @@
                 <% listing.reviews.slice().reverse().forEach(review => { %>
                     <div class="card col-5 mb-3 mx-auto">
                         <div class="card-body m-2">
-                            <h5 class="card-title"><%= review.user ? review.user.username : "Anonymous" %></h5>
+                            <h5 class="card-title"><%= review.author.username %></h5>
                             <p class="card-text"><%= review.comment %></p>
                             <p class="card-text">
                                 Rating: 

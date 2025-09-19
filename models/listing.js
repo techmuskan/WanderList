@@ -9,7 +9,7 @@ const listingSchema = new Schema({
     },
     description: String,
     image: {
-        filename: { type: String, default: "default.jpg" },
+        filename: { type: String, default: "https://scontent.fbho6-1.fna.fbcdn.net/v/t39.30808-1/301587566_404399295135504_3234448828154347139_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=103&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=1tIE5PsWfBEQ7kNvwEpm0Cz&_nc_oc=AdnCMIi4pzXBeFyxOOUwcBszpphFjJvCTKTcLPhcOqgEusKNzFFTAOPdIzrYaeeo-6GB_4E6z_4_tXkJem7RoNii&_nc_zt=24&_nc_ht=scontent.fbho6-1.fna&_nc_gid=jSKOJsuIbCBV8fjqHyZ2nw&oh=00_AfZ1E2H4SmTOecMRCHc4SniVJKPL6YzLI04oR_pJj7JqhA&oe=68CC4621" },
         url: {
           type: String,
           default:
