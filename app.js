@@ -59,10 +59,18 @@ app.use((req, res, next) => {
     next();
 });
 
+// // MONGOOSE CONNECTION
+// mongoose.connect("mongodb://127.0.0.1:27017/WanderList")
+//     .then(() => console.log("✅ MongoDB Connected"))
+//     .catch(err => console.error("❌ MongoDB Error:", err));
+
+const dbURL = process.env.ATLASDB_URL;
+
 // MONGOOSE CONNECTION
-mongoose.connect("mongodb://127.0.0.1:27017/WanderList")
+mongoose.connect(dbURL)
     .then(() => console.log("✅ MongoDB Connected"))
     .catch(err => console.error("❌ MongoDB Error:", err));
+
 
 // ROUTES
 const listingRouter = require('./routes/listing');
