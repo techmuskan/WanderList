@@ -9,8 +9,16 @@ body{
 }
 /* navbar */
 .navbar{
-    height: 5rem;
+    height: auto;
     background-color: white;
+    
+}
+@media screen and (min-width:767px) {
+    .navbar{
+        line-height: 4rem;
+        
+    }
+    
 }
 .nav-link{
     color: #222222 !important;
