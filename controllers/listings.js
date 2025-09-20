@@ -1,107 +1,136 @@
-const Listing = require('../models/listing');  // singular, matches the file
+const Listing = require('../models/listing');  
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const mapToken = process.env.MAP_TOKEN;
+const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
-
+// List all listings
 module.exports.index = async (req, res) => {
-    const allListings = await Listing.find({}).populate('owner');
-    res.render("listings/index.ejs", { allListings });
-    
+  const allListings = await Listing.find({}).populate('owner');
+  res.render("listings/index.ejs", { allListings });
 };
 
+// Render new listing form
 module.exports.newFormRender = (req, res) => {
-    res.render("listings/new.ejs");
+  res.render("listings/new.ejs");
 };
 
+// Show a single listing
 module.exports.show = async (req, res) => {
-    const listing = await Listing.findById(req.params.id)
-        .populate({
-            path: 'reviews',
-            populate: { path: 'author' }
-        }).populate('owner');
+  const listing = await Listing.findById(req.params.id)
+    .populate({ path: 'reviews', populate: { path: 'author' } })
+    .populate('owner');
 
-    if (!listing) {
-        req.flash('error', 'Cannot find that listing!');
-        return res.redirect('/listings');
-    }
+  if (!listing) {
+    req.flash('error', 'Cannot find that listing!');
+    return res.redirect('/listings');
+  }
 
-    res.render("listings/show.ejs", { listing });
+  res.render("listings/show", { listing, mapToken: process.env.MAP_TOKEN });
+
 };
 
+// Create a new listing
 module.exports.create = async (req, res) => {
-    try {
-        // Check if listing exists in body
-        if (!req.body.listing) throw new Error("Listing data missing!");
+  try {
+    if (!req.body.listing) throw new Error("Listing data missing!");
 
-        const listing = new Listing(req.body.listing); // title, desc, price, location, country
+    // Default geometry
+    let geometry = { type: "Point", coordinates: [77.4126, 23.2699] };
 
-        // If image is uploaded
-        if (req.file) {
-            listing.image = {
-                url: req.file.path,       // or req.file.path/cloudinary url
-                filename: req.file.filename
-            };
-        }
-
-        listing.owner = req.user._id;   // if using login
-
-        await listing.save();
-        req.flash('success', 'Listing created successfully!');
-        res.redirect(`/listings`);
-    } catch (e) {
-        req.flash('error', e.message);
-        res.redirect('/listings/new');
+    // Geocode if location is provided
+    if (req.body.listing.location) {
+      const response = await geocodingClient.forwardGeocode({
+        query: req.body.listing.location,
+        limit: 1
+      }).send();
+      const geoData = response.body.features[0];
+      if (geoData) geometry = geoData.geometry;
     }
+
+    // Create listing with defaults and geometry
+    const listing = new Listing({
+      ...req.body.listing,
+      owner: req.user._id,
+      geometry
+    });
+
+    // Image handling
+    if (req.file?.path) {
+      listing.image = { url: req.file.path, filename: req.file.filename };
+    }
+
+    await listing.save();
+    req.flash("success", "Listing created successfully!");
+    res.redirect("/listings");
+  } catch (e) {
+    console.error("Error creating listing:", e);
+    req.flash("error", e.message || "Something went wrong!");
+    res.redirect("/listings/new");
+  }
 };
 
+// Render edit form
 module.exports.edit = async (req, res) => {
+  try {
     const listing = await Listing.findById(req.params.id);
-
     if (!listing) {
-        req.flash('error', 'Listing not found!');
-        return res.redirect('/listings');
+      req.flash('error', 'Listing not found!');
+      return res.redirect('/listings');
     }
 
-    // Cloudinary resize transformation for edit page
-    let originalImageURL = null;
-    if (listing.image && listing.image.url) {
-        // Resize via Cloudinary: width 400px, auto height, keep quality
-        // Add other transformations if needed (e.g., quality, format)
-        originalImageURL = listing.image.url.replace(
-            '/upload',
-            '/upload/w_250,h_300'
-        );
+    // Resize Cloudinary image for preview
+    let originalImageURL = listing.image?.url || "/images/default.jpg";
+    if (originalImageURL.includes('upload')) {
+      originalImageURL = originalImageURL.replace('/upload', '/upload/w_400,h_300,c_fill');
     }
 
     res.render("listings/edit.ejs", { listing, originalImageURL });
+  } catch (e) {
+    console.error("Error rendering edit form:", e);
+    req.flash("error", "Cannot load edit form!");
+    res.redirect("/listings");
+  }
 };
 
+// Update a listing
 module.exports.update = async (req, res) => {
+  try {
     const { id } = req.params;
 
     const updatedListing = await Listing.findByIdAndUpdate(
-        id,
-        { ...req.body.listing },
-        { runValidators: true, new: true }
+      id,
+      { ...req.body.listing },
+      { runValidators: true, new: true }
     );
 
     if (!updatedListing) {
-        req.flash('error', 'Listing not found!');
-        return res.redirect('/listings');
+      req.flash('error', 'Listing not found!');
+      return res.redirect('/listings');
     }
 
-    if (req.file) {
-        const { path: url, filename } = req.file;
-        updatedListing.image = { url, filename };  // replace old image
-        await updatedListing.save();
+    // Update image if uploaded
+    if (req.file?.path) {
+      updatedListing.image = { url: req.file.path, filename: req.file.filename };
+      await updatedListing.save();
     }
 
     req.flash('success', 'Successfully updated listing!');
     res.redirect(`/listings/${id}`);
+  } catch (e) {
+    console.error("Error updating listing:", e);
+    req.flash("error", e.message || "Update failed!");
+    res.redirect(`/listings/${req.params.id}/edit`);
+  }
 };
 
-
+// Delete a listing
 module.exports.delete = async (req, res) => {
-    const { id } = req.params;
-    await Listing.findByIdAndDelete(id);
+  try {
+    await Listing.findByIdAndDelete(req.params.id);
     req.flash('success', 'Successfully deleted listing!');
-    res.redirect("/listings");
-}
+  } catch (e) {
+    console.error("Error deleting listing:", e);
+    req.flash('error', 'Failed to delete listing!');
+  }
+  res.redirect("/listings");
+};

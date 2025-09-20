@@ -66,6 +66,13 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  res.locals.mapToken = process.env.MAP_TOKEN;  // ✅ make available everywhere
+  next();
+});
+
+
 // ROUTES
 const listingRouter = require('./routes/listing');
 app.use('/listings', listingRouter);

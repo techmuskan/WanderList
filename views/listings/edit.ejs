@@ -1,55 +1,71 @@
 <% layout("layouts/boilerplate") -%>
 <br>
-<h2 >Update Your Listing</h2>
+<h2>Update Your Listing</h2>
 <div class="row">
-    <div class="col-md-8 offset-md-2">
-        <form action="/listings/<%= listing._id %>?_method=PUT" method="post" novalidate class="needs-validation" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label for="title" class="form-label">Title:</label> <br>
-                <input type="text" name="listing[title]" value="<%= listing.title %>" class="form-control" required>
-                <div class="valid-feedback">Title looks good...</div>
-            </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">Description:</label> <br>
-                <textarea name="listing[description]" class="form-control" required><%= listing.description %></textarea>
-            </div>
-            <div class="mb-3">
-                Original Listing Image: <br><br>
-                <% if (originalImageURL) { %>
-                    <img src="<%= originalImageURL %>" alt="Listing image" style="border-radius: 8px; width: 100%;">
-                <% } else { %>
-                    <p class="text-muted">No image uploaded yet</p>
-                <% } %>
-            </div>
+  <div class="col-md-8 offset-md-2">
+    <form action="/listings/<%= listing._id %>?_method=PUT" method="post" novalidate class="needs-validation" enctype="multipart/form-data">
 
+      <!-- Title -->
+      <div class="mb-3">
+        <label for="title" class="form-label">Title:</label>
+        <input type="text" name="listing[title]" value="<%= listing.title || '' %>" class="form-control" required>
+        <div class="valid-feedback">Title looks good...</div>
+      </div>
 
-            <div class="mb-3">
-                <label for="imageUrl" class="form-label">Upload New Image:</label><br>
-                <input type="file" name="listing[image]" class="form-control">
-            </div>
-            
-         
-            <div class="mb-3">
-                <label for="location" class="form-label">Location:</label> <br>
-                <input type="text" name="listing[location]" value="<%= listing.location %>" class="form-control">
-            </div>
-            <div class="row">
-                <div class="mb-3 col-md-4">
-                    <label for="price" class="form-label">Price:</label><br>
-                    <input name="listing[price]" type="number" value="<%= listing.price %>" class="form-control" required>
-                    <div class="invalid-feedback">Enter a valid price.</div>
-                </div>
-                <div class="mb-3 col-md-8">
-                    <label for="country" class="form-label">Country:</label><br>
-                    <input type="text" name="listing[country]" value="<%= listing.country %>" class="form-control" required>
-                    <div class="invalid-feedback">Enter a valid country name.</div>
-                </div>
-            </div>
-            <br>
-            <div class="flex text-center">
-                <button class="btn btn-dark px-md-5">Update Listing</button>
-            </div>
-            <br><br>
-        </form>            
-    </div>
+      <!-- Description -->
+      <div class="mb-3">
+        <label for="description" class="form-label">Description:</label>
+        <textarea name="listing[description]" class="form-control" required><%= listing.description || '' %></textarea>
+      </div>
+
+      <!-- Original Image -->
+      <div class="mb-3">
+        <label>Original Listing Image:</label><br>
+        <% 
+          let imgURL = '/images/default.jpg';
+          if (originalImageURL) {
+            imgURL = originalImageURL.includes('upload') 
+                     ? originalImageURL.replace('/upload', '/upload/w_400,h_300,c_fill') 
+                     : originalImageURL;
+          }
+        %>
+        <img src="<%= imgURL %>" alt="Listing Image" class="img-fluid my-2" style="max-height:300px; border-radius:8px;">
+      </div>
+
+      <!-- Upload New Image -->
+      <div class="mb-3">
+        <label for="image" class="form-label">Upload New Image:</label>
+        <input type="file" name="listing[image]" class="form-control">
+      </div>
+
+      <!-- Location -->
+      <div class="mb-3">
+        <label for="location" class="form-label">Location:</label>
+        <input type="text" name="listing[location]" value="<%= listing.location || '' %>" class="form-control">
+      </div>
+
+      <div class="row">
+        <!-- Price -->
+        <div class="mb-3 col-md-4">
+          <label for="price" class="form-label">Price:</label>
+          <input name="listing[price]" type="number" value="<%= listing.price || 0 %>" class="form-control" required>
+          <div class="invalid-feedback">Enter a valid price.</div>
+        </div>
+
+        <!-- Country -->
+        <div class="mb-3 col-md-8">
+          <label for="country" class="form-label">Country:</label>
+          <input type="text" name="listing[country]" value="<%= listing.country || '' %>" class="form-control" required>
+          <div class="invalid-feedback">Enter a valid country name.</div>
+        </div>
+      </div>
+
+      <br>
+      <div class="text-center">
+        <button class="btn btn-dark px-md-5">Update Listing</button>
+      </div>
+      <br><br>
+
+    </form>            
+  </div>
 </div>
