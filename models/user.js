@@ -10,6 +10,6 @@ const UserSchema = new Schema({
     }
 });
 
-UserSchema.plugin(passportLocalMongoose); // Adds username, hash and salt fields
+UserSchema.plugin(passportLocalMongoose); // adds username, hash, salt
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('User', UserSchema); // ✅ export model
