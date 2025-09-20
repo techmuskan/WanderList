@@ -1,4 +1,5 @@
 <% layout("layouts/boilerplate") -%>
+
 <br>
 <h2>Update Your Listing</h2>
 <div class="row">
@@ -9,13 +10,26 @@
       <div class="mb-3">
         <label for="title" class="form-label">Title:</label>
         <input type="text" name="listing[title]" value="<%= listing.title || '' %>" class="form-control" required>
-        <div class="valid-feedback">Title looks good...</div>
+        <div class="invalid-feedback">Enter a valid title.</div>
       </div>
 
       <!-- Description -->
       <div class="mb-3">
         <label for="description" class="form-label">Description:</label>
         <textarea name="listing[description]" class="form-control" required><%= listing.description || '' %></textarea>
+        <div class="invalid-feedback">Enter a description.</div>
+      </div>
+
+      <!-- Category -->
+      <div class="mb-3">
+        <label for="category" class="form-label">Category:</label>
+        <select name="listing[category]" class="form-select" required>
+          <% const categories = ["Trending","Rooms","Iconic Cities","Mountains","Castles","Arctic Pools","Camping","Farms","Snow","Desserts","Beachfront","Tiny Homes"]; %>
+          <% categories.forEach(cat => { %>
+            <option value="<%= cat %>" <%= listing.category === cat ? 'selected' : '' %> ><%= cat %></option>
+          <% }) %>
+        </select>
+        <div class="invalid-feedback">Select a category.</div>
       </div>
 
       <!-- Original Image -->
@@ -35,13 +49,15 @@
       <!-- Upload New Image -->
       <div class="mb-3">
         <label for="image" class="form-label">Upload New Image:</label>
-        <input type="file" name="listing[image]" class="form-control">
+        <input type="file" name="listing[image]" class="form-control" id="imageInput">
+        <img id="imagePreview" src="#" alt="New Image Preview" style="display:none; max-height:200px; margin-top:10px; border-radius:8px;">
       </div>
 
       <!-- Location -->
       <div class="mb-3">
         <label for="location" class="form-label">Location:</label>
-        <input type="text" name="listing[location]" value="<%= listing.location || '' %>" class="form-control">
+        <input type="text" name="listing[location]" value="<%= listing.location || '' %>" class="form-control" required>
+        <div class="invalid-feedback">Enter a valid location.</div>
       </div>
 
       <div class="row">
@@ -60,12 +76,40 @@
         </div>
       </div>
 
+      <!-- Submit -->
       <br>
       <div class="text-center">
         <button class="btn btn-dark px-md-5">Update Listing</button>
       </div>
       <br><br>
-
     </form>            
   </div>
 </div>
+
+<script>
+  // Image preview for new upload
+  const imageInput = document.getElementById('imageInput');
+  const imagePreview = document.getElementById('imagePreview');
+  imageInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if(file) {
+      imagePreview.src = URL.createObjectURL(file);
+      imagePreview.style.display = 'block';
+    }
+  });
+
+  // Bootstrap validation
+  (function () {
+    'use strict'
+    const forms = document.querySelectorAll('.needs-validation')
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+        form.classList.add('was-validated')
+      }, false)
+    })
+  })()
+</script>

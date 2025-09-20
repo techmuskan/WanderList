@@ -1,50 +1,118 @@
 <% layout("layouts/boilerplate") -%>
 <body>
-    <br>
-    <h2>Create a New Listing </h2>
-    <br>
+  <div class="container mt-5">
+    <h2 class=" col-md-8 offset-md-2 mb-4">Create a New Listing</h2>
     <div class="row">
-     <div class="col-md-8 offset-md-2"> 
-    <form action="/listings" method="post" class="needs-validation" novalidate enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="title" class="form-label"><b>Enter title name: </b></label><br>
-            <input name="listing[title]" placeholder="Enter Title" type="text" class="form-control" required>
-            <div class="valid-feedback"> Titles looks good. </div>
-        </div>
-        <div class="mb-3">
-            <label for="description" class="form-label"><b>Enter description name: </b></label><br>
-            <textarea name="listing[description]" placeholder="Enter Description" type="text" class="form-control" required ></textarea>
-            <div class="invalid-feedback"> Enter a short description. </div>
-        </div>
-        <div class="mb-3">
-            <label for="image" class="form-label"><b>Upload Listing Image: </b></label><br>
-            <input id="imageUrlInput" name="listing[image]" type="file" class="form-control" required>
-            <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 100%; margin-top: 10px; ">
-        </div>
-        <div class="row">
+      <div class="col-md-8 offset-md-2">
+        <form action="/listings" method="post" class="needs-validation" novalidate enctype="multipart/form-data">
+
+          <!-- Title -->
+          <div class="mb-3">
+            <label for="title" class="form-label"><b>Enter title:</b></label>
+            <input type="text" name="listing[title]" placeholder="Enter Title" class="form-control" required>
+            <div class="valid-feedback">Title looks good!</div>
+            <div class="invalid-feedback">Please enter a title.</div>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-3">
+            <label for="description" class="form-label"><b>Enter description:</b></label>
+            <textarea name="listing[description]" placeholder="Enter Description" class="form-control" rows="4" required></textarea>
+            <div class="invalid-feedback">Please enter a short description.</div>
+          </div>
+
+          <!-- Image Upload -->
+          <div class="mb-3">
+            <label for="image" class="form-label"><b>Upload Listing Image:</b></label>
+            <input id="imageUrlInput" type="file" name="listing[image]" class="form-control" required>
+            <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 100%; margin-top: 10px; border-radius: 8px;">
+            <div class="invalid-feedback">Please upload an image.</div>
+          </div>
+
+          <!-- Price & Country -->
+          <div class="row">
             <div class="mb-3 col-md-4">
-                <label for="price" class="form-label"><b>Enter price: </b></label>
-                <input name="listing[price]" placeholder="Enter Price" type="number" class="form-control" required >
-                <div class="invalid-feedback" > Enter valid price. </div>
+              <label for="price" class="form-label"><b>Enter price:</b></label>
+              <input type="number" name="listing[price]" placeholder="Enter Price" class="form-control" required>
+              <div class="invalid-feedback">Enter a valid price.</div>
             </div>
             <div class="mb-3 col-md-8">
-                <label for="country" class="form-label"><b>Enter country: </b></label>
-                <input name="listing[country]" placeholder="Enter Country" type="text" class="form-control" required >
-                <div class="invalid-feedback"> Enter a valid country name. </div>
+              <label for="country" class="form-label"><b>Enter country:</b></label>
+              <input type="text" name="listing[country]" placeholder="Enter Country" class="form-control" required>
+              <div class="invalid-feedback">Enter a valid country name.</div>
             </div>
-            
-        </div>
-        
-        <div    class="mb-3">
-            <label for="location" class="form-label"><b>Enter location: </b></label><br>
-            <input name="listing[location]" placeholder="Enter Location" type="text" class="form-control" required >
-            <div class="invalid-feedback"> Enter a valid location name. </div>
-        </div>
-        
-        <br>
-        <div class="flex text-center">
-            <button class="btn btn-dark px-md-5 ">ADD</button>
-        </div>
-        <br><br>
-    </form>
-</div>  
+          </div>
+
+          <!-- Category -->
+          <div class="mb-3">
+            <label for="category" class="form-label"><b>Category:</b></label>
+            <select name="listing[category]" id="category" class="form-select" required>
+              <option value="" disabled selected>Select Category</option>
+              <option value="Trending">Trending</option>
+              <option value="Rooms">Rooms</option>
+              <option value="Iconic Cities">Iconic Cities</option>
+              <option value="Mountains">Mountains</option>
+              <option value="Castles">Castles</option>
+              <option value="Arctic Pools">Arctic Pools</option>
+              <option value="Camping">Camping</option>
+              <option value="Farms">Farms</option>
+              <option value="Snow">Snow</option>
+              <option value="Desserts">Desserts</option>
+              <option value="Beachfront">Beachfront</option>
+              <option value="Tiny Homes">Tiny Homes</option>
+            </select>
+            <div class="invalid-feedback">Please select a category.</div>
+          </div>
+
+          <!-- Location -->
+          <div class="mb-3">
+            <label for="location" class="form-label"><b>Enter location:</b></label>
+            <input type="text" name="listing[location]" placeholder="Enter Location" class="form-control" required>
+            <div class="invalid-feedback">Enter a valid location name.</div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="text-center mt-4">
+            <button class="btn btn-dark px-5" type="submit">ADD LISTING</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS: Bootstrap Validation & Image Preview -->
+  <script>
+    // Bootstrap 5 validation
+    (() => {
+      'use strict';
+      const forms = document.querySelectorAll('.needs-validation');
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    })();
+
+    // Image preview
+    const imageInput = document.getElementById('imageUrlInput');
+    const imagePreview = document.getElementById('imagePreview');
+    imageInput.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          imagePreview.src = e.target.result;
+          imagePreview.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+      } else {
+        imagePreview.style.display = 'none';
+      }
+    });
+  </script>
+</body>

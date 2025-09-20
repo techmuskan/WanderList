@@ -5,29 +5,33 @@ const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
 module.exports.index = async (req, res) => {
   try {
-    const { q } = req.query; // search term
+    const { q, category } = req.query; 
     let filter = {};
 
     if (q) {
-      filter = {
-        $or: [
-          { title: { $regex: q, $options: 'i' } },
-          { location: { $regex: q, $options: 'i' } }
-        ]
-      };
+      filter.$or = [
+        { title: { $regex: q, $options: "i" } },
+        { location: { $regex: q, $options: "i" } }
+      ];
+    }
+
+    if (category && category !== "All") {
+      filter.category = category;
     }
 
     const allListings = await Listing.find(filter);
-    res.render("listings/index", { 
-      allListings, 
+    res.render("listings/index", {
+      allListings,
       currentUser: req.user,
-      searchQuery: q || ""   // ✅ pass query to EJS
+      searchQuery: q || "",
+      selectedCategory: category || "All"
     });
   } catch (err) {
     console.log(err);
     res.redirect("/listings");
   }
 };
+
 
 
 

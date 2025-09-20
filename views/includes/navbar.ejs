@@ -1,52 +1,189 @@
+<% 
+  const route = typeof currentRoute !== 'undefined' ? currentRoute : '';
+%>
+
 <style>
-  .btn-search{
-    background-color: #fe424d;
-    color: white;
-    border-radius: 25px;
-    padding: 0 1rem 0 1rem;
+/* =========================
+   Navbar General Styles
+========================= */
+.navbar {
+  padding: 0.5rem 1rem;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.navbar-nav .nav-link {
+  margin-right: 1rem;
+  padding: 0.5rem 0.8rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.navbar-nav .nav-link:last-child {
+  margin-right: 0;
+}
+
+.search-input {
+  border-radius: 25px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  min-width: 250px;
+}
+
+.btn-search {
+  background-color: #fe424d;
+  color: white;
+  border-radius: 25px;
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
+  transition: background 0.3s;
+}
+
+.btn-search:hover {
+  background-color: #e63a42;
+}
+
+.btn-search i {
+  margin-right: 0.5rem;
+}
+
+/* =========================
+   Tablets: 768px–960px
+========================= */
+@media (min-width: 768px) and (max-width: 960px) {
+  .navbar {
+    flex-wrap: nowrap; /* prevent wrapping */
   }
-  .btn-search:hover{
-    background-color: #fe424d;
-    color: white;
+
+  .navbar-nav.me-auto,
+  .navbar-nav.mx-auto,
+  .navbar-nav.ms-auto {
+    flex-direction: row; /* keep all links inline */
+    align-items: center;
+    justify-content: flex-start;
   }
-  .btn-search i{
-    display: inline;
-    margin-right: 0.5rem;
+
+  .navbar-nav.mx-auto {
+    flex: 1 1 auto; /* take remaining space for search bar */
+    justify-content: center;
   }
-  .search-input{
-    border-radius: 25px;
-    padding: 0.5rem 3rem 0.5rem 3rem;
-    font-size: 1rem;
+
+  form.d-flex {
+    flex-direction: row;
+    gap: 0.3rem;
+    flex-wrap: nowrap;
+    width: 100%;
+    justify-content: center;
   }
+
+  .search-input {
+    min-width: 180px;
+    font-size: 0.9rem;
+  }
+
+  .btn-search {
+    font-size: 0.85rem;
+    padding: 0.3rem 0.7rem;
+  }
+
+  .navbar-nav .nav-link {
+    font-size: 0.85rem;
+    margin: 0 0.3rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+/* =========================
+   Medium & Small Screens <=767px
+========================= */
+@media (max-width: 767px) {
+  .navbar-collapse {
+    flex-wrap: wrap; /* allow collapse to stack items */
+  }
+
+  .navbar-nav {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .navbar-nav .nav-link {
+    margin: 0.3rem 0;
+  }
+
+  form.d-flex {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .search-input, .btn-search {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* =========================
+   Extra Small Screens <=480px
+========================= */
+@media (max-width: 480px) {
+  .navbar-brand {
+    font-size: 1.2rem;
+  }
+
+  .navbar-nav .nav-link {
+    font-size: 0.9rem;
+  }
+
+  .search-input {
+    min-width: 150px;
+  }
+
+  .btn-search {
+    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
+  }
+}
+
 </style>
 
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#"><b>WanderList</b></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+    <a class="navbar-brand" href="/"><b>WanderList</b></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link" href="/listings">Explore</a>
-      </div>
-      <div class="navbar-nav ms-auto">
-        <form class="d-flex" role="search" action="/listings" method="get">
-          <input type="search" name="q" class="form-control me-2 search-input"
-       value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
-       placeholder="Search destinations">
 
-          <button class="btn btn-search" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Submit</button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <!-- Left links -->
+      <div class="navbar-nav me-auto">
+        <a class="nav-link <%= route === '/listings' ? 'active' : '' %>" href="/listings"><b>Explore</b></a>
+      </div>
+
+      <!-- Search bar -->
+      <div class="navbar-nav mx-auto my-2 my-md-0">
+        <form class="d-flex flex-md-row flex-column" role="search" action="/listings" method="get">
+          <input type="search" name="q" class="form-control me-md-2 mb-2 mb-md-0 search-input"
+            value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+            placeholder="Search destinations">
+          <button class="btn btn-search" type="submit">
+            <i class="fa-solid fa-magnifying-glass"></i>Search
+          </button>
         </form>
       </div>
+
+      <!-- Right links -->
       <div class="navbar-nav ms-auto">
         <% if(currentUser) { %>
-          <a class="nav-link" href="#">Welcome, <b><u><%= currentUser.username %></u></b></a>
-          <a class="nav-link" href="/listings/new">WanderList your home</a>
+          <span class="nav-link text-center"><b>Welcome, <u><i><%= currentUser.username %></i></u></b></span>
+          <a class="nav-link <%= route === '/listings/new' ? 'active' : '' %>" href="/listings/new"><b>Share Your Spot</b></a>
           <a class="nav-link" href="/logout"><b>Logout</b></a>
         <% } else { %>
-          <a class="nav-link" href="/signup"><b>SignUp</b></a>
-          <a class="nav-link" href="/login"><b>Login</b></a>
+          <a class="nav-link <%= route === '/signup' ? 'active' : '' %>" href="/signup"><b>SignUp</b></a>
+          <a class="nav-link <%= route === '/login' ? 'active' : '' %>" href="/login"><b>Login</b></a>
         <% } %>
       </div>
     </div>

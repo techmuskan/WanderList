@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Review = require('./review');
 
 const listingSchema = new Schema({
   title: { type: String, required: true },
@@ -12,6 +11,7 @@ const listingSchema = new Schema({
   price: { type: Number, required: true, default: 0 },
   location: { type: String, default: "Location not specified" },
   country: { type: String, default: "Country not specified" },
+  category: { type: String, enum: ["Trending", "Rooms", "Iconic Cities", "Mountains", "Castles", "Arctic Pools", "Camping", "Farms", "Snow", "Desserts", "Beachfront", "Tiny Homes"], default: "Trending" },
   reviews: [
     { type: Schema.Types.ObjectId, ref: 'Review' }
   ],
@@ -26,24 +26,25 @@ const listingSchema = new Schema({
     coordinates: {
       type: [Number],
       required: true,
-      default: [77.4126, 23.2699] // fallback coordinates
+      default: [77.4126, 23.2699]
     }
   }
-}, { timestamps: true }); // automatically adds createdAt and updatedAt
+}, { timestamps: true });
 
-// 2dsphere index for geoqueries
+
+// Indexes
 listingSchema.index({ geometry: "2dsphere" });
+listingSchema.index({ title: "text", description: "text", location: "text", country: "text" });
 
-// Cascade delete reviews when a listing is deleted
+// Cascade delete reviews
 listingSchema.post('findOneAndDelete', async (listing) => {
   try {
     if (listing?.reviews?.length > 0) {
-      await Review.deleteMany({ _id: { $in: listing.reviews } });
+      await mongoose.model('Review').deleteMany({ _id: { $in: listing.reviews } });
     }
   } catch (err) {
     console.error("Error deleting reviews for listing:", err);
   }
 });
 
-const Listing = mongoose.model('Listing', listingSchema);
-module.exports = Listing;
+module.exports = mongoose.model('Listing', listingSchema);
