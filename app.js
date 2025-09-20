@@ -43,10 +43,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/WanderList")
     .then(() => console.log("✅ MongoDB Connected"))
     .catch(err => console.error("❌ MongoDB Error:", err));
 
-// HOME ROUTE
-app.get('/', (req, res) => {
-    res.send("Hello I'm a server");
-});
 
 
 app.use(session(sessionOptions));
