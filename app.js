@@ -68,6 +68,11 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  res.locals.searchQuery = req.query.q || '';   // ✅ always available in EJS
+  next();
+});
 
 // ROUTES
 const listingRouter = require('./routes/listing');
