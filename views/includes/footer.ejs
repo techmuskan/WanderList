@@ -1,133 +1,150 @@
-<footer id="site-footer" class="fade-footer">
+<footer id="site-footer">
   <div class="footer-container">
     <!-- About Section (Left-aligned) -->
-    <div class="text-start" style="flex:1 1 250px; min-width:250px;">
-      <h5 style="color:#ff6b6b; margin-bottom:10px;">WanderList</h5>
-      <p style="font-size:0.9rem; line-height:1.5; color:#ccc;">
-        Discover amazing places, connect with hosts, and share your experiences. Your adventure starts here.
+    <div class="footer-left">
+      <h5>WanderList</h5>
+      <p>
+        Discover amazing places, connect with hosts, and share your experiences. 
+        Your adventure starts here.
       </p>
     </div>
 
-    <!-- Quick Links (Center-aligned) -->
-    <div style="flex:1 1 200px; min-width:200px; text-align:center;">
-      <h5 style="color:#ff6b6b; margin-bottom:10px;">Quick Links</h5>
-      <ul style="list-style:none; padding:0; font-size:0.9rem;">
-        <li><a href="/listings">All Listings</a></li>
-        <li><a href="/signup">Sign Up</a></li>
-        <li><a href="/login">Login</a></li>
-        <li><a href="/contact">Contact</a></li>
-      </ul>
-    </div>
+    <!-- Centered Section (Quick Links + Social) -->
+    <div class="footer-center">
+      <!-- Quick Links -->
+      <div class="quick-links">
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="/listings">All Listings</a></li>
+          <li><a href="/signup">Sign Up</a></li>
+          <li><a href="/login">Login</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
 
-    <!-- Social Section (Center-aligned) -->
-    <div style="flex:1 1 200px; min-width:200px; text-align:center;">
-      <h5 style="color:#ff6b6b; margin-bottom:10px;">Follow Us</h5>
-      <div style="display:flex; justify-content:center; gap:15px; font-size:1.3rem;">
-        <a href="#" class="social-icon"><i class="fa-brands fa-facebook"></i></a>
-        <a href="#" class="social-icon"><i class="fa-brands fa-twitter"></i></a>
-        <a href="#" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
-        <a href="#" class="social-icon"><i class="fa-brands fa-linkedin"></i></a>
+      <!-- Social Section -->
+      <div class="social">
+        <h5>Follow Us</h5>
+        <div class="social-icons">
+          <a href="#" class="social-icon"><i class="fa-brands fa-facebook"></i></a>
+          <a href="#" class="social-icon"><i class="fa-brands fa-twitter"></i></a>
+          <a href="#" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="social-icon"><i class="fa-brands fa-linkedin"></i></a>
+        </div>
       </div>
     </div>
-  </div>
-
-  <hr style="border-color:#333; margin:30px 0;">
-
-  <div style="text-align:center; font-size:0.8rem; color:#aaa;">
-    &copy; <%= new Date().getFullYear() %> WanderList. All rights reserved.
   </div>
 </footer>
 
 <style>
-  html, body {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    font-family: Arial, sans-serif;
-  }
+  /* ===== Footer Container ===== */
+#site-footer {
+  background-color: #222;
+  color: #fff;
+  padding: 40px 20px;
+  font-family: Arial, sans-serif;
+}
 
-  main {
-    flex: 1 0 auto;
-  }
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 2rem;
+}
 
-  #site-footer {
-    flex-shrink: 0;
-    width: 100%;
-    background: linear-gradient(135deg, #1e1e1e, #2c2c2c);
-    color: #fff;
-    padding: 40px 20px;
-    box-shadow: 0 -4px 15px rgba(0,0,0,0.4);
-  }
+/* ===== Left Section (About) ===== */
+.footer-left {
+  flex: 1 1 250px;
+  min-width: 250px;
+}
 
+.footer-left h5 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #ff6b6b;
+}
+
+.footer-left p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+/* ===== Center Section (Links + Social) ===== */
+.footer-center {
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  text-align: center;
+  gap: 1.5rem;
+}
+
+/* Quick Links */
+.quick-links, .social {
+  flex: 1 1 140px;
+}
+
+.quick-links h5,
+.social h5 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #ff6b6b;
+}
+
+.quick-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.quick-links ul li {
+  margin: 0.3rem 0;
+}
+
+.quick-links ul li a {
+  color: #fff;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.quick-links ul li a:hover {
+  opacity: 1;
+}
+
+/* Social Icons */
+.social-icons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.social-icon {
+  color: #fff;
+  font-size: 1.3rem;
+  transition: color 0.3s;
+}
+
+.social-icon:hover {
+  color: #ff6b6b;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
   .footer-container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 20px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
-  .fade-footer {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 1s ease-out, transform 1s ease-out;
+  .footer-left,
+  .footer-center {
+    flex: 1 1 100%;
   }
+}
 
-  .fade-footer.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  footer a {
-    color: #fff;
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-
-  footer a:hover {
-    color: #ff6b6b;
-  }
-
-  .social-icon {
-    display: inline-block;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .social-icon:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 20px rgba(255,107,107,0.6);
-    border-radius: 50%;
-  }
-
-  @media(max-width:768px){
-    .footer-container {
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-      text-align: center;
-    }
-    #site-footer {
-      padding: 30px 15px;
-    }
-  }
 </style>
-
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const footer = document.getElementById("site-footer");
-    if(!footer) return;
-    footer.classList.add("visible");
-
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if(entry.isIntersecting){
-          footer.classList.add("visible");
-        }
-      });
-    }, { threshold: 0.1 });
-    observer.observe(footer);
-  });
-</script>
