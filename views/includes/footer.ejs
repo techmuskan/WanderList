@@ -15,7 +15,7 @@
         <li><a href="/listings">All Listings</a></li>
         <li><a href="/signup">Sign Up</a></li>
         <li><a href="/login">Login</a></li>
-        <li><a href="/">Contact</a></li>
+        <li><a href="/contact">Contact</a></li>
       </ul>
     </div>
 
@@ -23,10 +23,10 @@
     <div style="flex:1 1 200px; min-width:200px; text-align:center;">
       <h5 style="color:#ff6b6b; margin-bottom:10px;">Follow Us</h5>
       <div style="display:flex; justify-content:center; gap:15px; font-size:1.3rem;">
-        <a href="https://www.facebook.com/WanderList" target="_blank"  class="social-icon"><i class="fa-brands fa-facebook"></i></a>
-        <a href="https://twitter.com/WanderList" target="_blank" class="social-icon"><i class="fa-brands fa-twitter"></i></a>
-        <a href="https://www.instagram.com/WanderList" target="_blank" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
-        <a href="https://www.linkedin.com/in/WanderList" target="_blank" class="social-icon"><i class="fa-brands fa-linkedin"></i></a>
+        <a href="#" class="social-icon"><i class="fa-brands fa-facebook"></i></a>
+        <a href="#" class="social-icon"><i class="fa-brands fa-twitter"></i></a>
+        <a href="#" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" class="social-icon"><i class="fa-brands fa-linkedin"></i></a>
       </div>
     </div>
   </div>
@@ -56,7 +56,7 @@
     width: 100%;
     background: linear-gradient(135deg, #1e1e1e, #2c2c2c);
     color: #fff;
-    padding: 40px 20px;
+    padding: 60px 40px;
     box-shadow: 0 -4px 15px rgba(0,0,0,0.4);
   }
 
@@ -102,17 +102,73 @@
     border-radius: 50%;
   }
 
-  @media(max-width:768px){
-    .footer-container {
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-      text-align: center;
-    }
-    #site-footer {
-      padding: 30px 15px;
-    }
+  @media (max-width: 768px) {
+  .footer-container {
+    flex-direction: row; /* Stack footer sections vertically */
+    align-items: center;    /* Center all sections */
+    text-align: center;
   }
+
+  #site-footer {
+    padding: 15px 7px; /* Reduce overall padding */
+  }
+
+  #site-footer h5 {
+    font-size: 1.1rem; /* Slightly smaller headings */
+    margin-bottom: 10px;
+  }
+
+  #site-footer p,
+  .footer-container ul {
+    font-size: 0.85rem; /* Slightly smaller text for readability */
+  }
+
+  .footer-container ul li {
+    margin-bottom: 8px; /* Space between links */
+  }
+
+  .social-icon {
+    font-size: 1.4rem; /* Slightly smaller icons */
+    margin: 0 8px;
+  }
+}
+  /* Small screen styles */
+@media (max-width: 480px) {
+  .footer-container {
+    flex-direction: row; /* Stack sections vertically */
+    align-items: center;    /* Center all content */
+    text-align: center;
+  }
+
+  #site-footer {
+    padding: 16px 5px; /* Reduce padding */
+  }
+
+  #site-footer h5 {
+    font-size: 1rem; /* Smaller headings */
+    margin-bottom: 8px;
+  }
+
+  #site-footer p,
+  .footer-container ul {
+    font-size: 0.8rem; /* Smaller paragraph and list text */
+    line-height: 1.4;
+  }
+
+  .footer-container ul li {
+    margin-bottom: 6px; /* Space between links */
+  }
+
+  .social-icon {
+    font-size: 1.2rem; /* Slightly smaller icons */
+    margin: 0 5px;      /* Adjust spacing */
+  }
+
+  hr {
+    margin: 10px 0; /* Reduce hr spacing */
+  }
+}
+
 </style>
 
 <script>
