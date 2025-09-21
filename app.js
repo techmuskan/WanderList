@@ -9,14 +9,28 @@ const path = require('path');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const session = require('express-session');
+const mongoStore = require('connect-mongo');
 const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 const ExpressError = require('./utils/ExpressError');
 
+const store = mongoStore.create({
+    mongoUrl: process.env.ATLASDB_URL,
+    touchAfter: 24 * 60 * 60, // time period in seconds
+    crypto: {
+        secret: 'squirrel'
+    }
+});
+
+store.on("error", function (e) {
+    console.log("SESSION STORE ERROR", e);
+});
+
 // SESSION CONFIG
 const sessionOptions = {
+    store: store,
     secret: "mysupersecretcode",
     resave: false,
     saveUninitialized: true,

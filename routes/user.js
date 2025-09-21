@@ -6,6 +6,9 @@ const passport = require('passport');
 const { saveRedirectUrl } = require('../middleware');
 const userController = require('../controllers/users');
 
+//Home Route
+router.get('/', userController.homePage);
+
 router.route("/signup")
 .get(userController.userRegister)  // Register Route
 .post(wrapAsync(userController.userSignUp));  // Signup Logic

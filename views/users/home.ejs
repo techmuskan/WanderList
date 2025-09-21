@@ -1,0 +1,58 @@
+<% layout("layouts/boilerplate") -%>
+
+<style>
+  /* Fade-in animation */
+  .fade-in {
+    animation: fadeIn 1s ease forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  /* Left-align headers */
+  .left-header {
+    text-align: left;
+    margin-bottom: 1rem;
+  }
+
+  /* Badge styling */
+  .category-badge {
+    font-size: 0.9rem;
+  }
+</style>
+
+
+<!-- Hero Section -->
+<section style="background: url('/images/hero-bg.jpg') no-repeat center center/cover; padding: 6rem 2rem; color: white; text-align: center;">
+  <div style="background-color: rgba(0,0,0,0.5); padding: 3rem; border-radius: 15px; display: inline-block; max-width: 800px;">
+    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Welcome to WanderList</h1>
+    <p style="font-size: 1.3rem; line-height: 1.6;">
+      Discover amazing places to visit, stay, and explore around the world. Start your adventure with WanderList!
+    </p>
+    <a href="/listings" style="display:inline-block; margin-top: 1.5rem; padding: 0.8rem 2rem; background-color: #ffcc00; color: #000; font-weight: 600; border-radius: 50px; text-decoration: none; transition: 0.3s;">
+      Get Started
+    </a>
+  </div>
+</section>
+
+<!-- About Section -->
+<section style="padding: 5rem 2rem; background-color: #f8f9fa; text-align: center;">
+  <div style="max-width: 800px; margin: 0 auto; background-color: #fff; padding: 3rem; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
+    <h2 style="font-size: 2rem; margin-bottom: 1rem;">About WanderList</h2>
+    <p style="font-size: 1.1rem; line-height: 1.7; color: #555;">
+      WanderList is your ultimate travel companion. Discover amazing places, connect with local hosts, 
+      and share your experiences with the world. Whether you're looking for hidden gems or popular destinations, 
+      WanderList makes your journey memorable and effortless.
+    </p>
+  </div>
+</section>
+
+<section id="contact" style="padding: 4rem 2rem; text-align: center; background-color: #fff;">
+  <h2 style="font-size: 2rem; color: #ff6b6b; margin-bottom: 2rem;">Contact Us</h2>
+
+  <p><i class="fa-solid fa-phone"></i> +91 123-456-7890</p>
+  <p><i class="fa-solid fa-envelope"></i> info@wanderlist.com</p>
+  <p><i class="fa-solid fa-location-dot"></i> Bhopal, Madhya Pradesh, India</p>
+</section>

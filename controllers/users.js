@@ -1,5 +1,10 @@
 const User = require('../models/user'); // ✅ Correct
 
+// Home Page
+module.exports.homePage = (req, res) => {
+    res.render('users/home');
+};
+
 module.exports.userRegister = (req, res) => {
     res.render('users/signup');
 };
