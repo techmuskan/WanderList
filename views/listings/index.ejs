@@ -9,7 +9,6 @@
   gap: 1.5rem;
   align-items: center;
   justify-content: center;
-  margin-top: 1rem;
 }
 
 /* Individual filter */
@@ -63,7 +62,7 @@
 ===================== */
 @media (min-width: 768px) and (max-width: 960px) {
   #filters {
-    flex-wrap: wrap; /* all items in one row */
+    flex-wrap: nowrap; /* all items in one row */
     gap: 1rem;
     justify-content: center;
   }
@@ -179,20 +178,25 @@
 
 <!-- Listings Section -->
 <section class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-3 mt-3">
-  <% if (!allListings || allListings.length === 0) { %>
-    <div class="d-flex flex-column justify-content-center align-items-center w-100 my-5" style="min-height: 50vh; text-align: center; color: #555;">
-      <i class="fa-solid fa-magnifying-glass" style="font-size: 4rem; margin-bottom: 1rem; color: #ff6b6b;"></i>
-      <% if (searchQuery) { %>
-        <h2 class="mb-2" style="font-size: 1.8rem;">No results found</h2>
-        <p style="font-size: 1.1rem;">We couldn’t find any listings for "<%= searchQuery %>".</p>
-      <% } else { %>
-        <h2 class="mb-2" style="font-size: 1.8rem;">No listings available</h2>
-        <p style="font-size: 1.1rem;">Please check back later! New listings are coming soon.</p>
-      <% } %>
-    </div>
-  <% } %>
-
-
+<% if (!allListings || allListings.length === 0) { %>
+  <div style="
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #555;
+  ">
+    <i class="fa-solid fa-magnifying-glass" style="font-size: 4rem; margin-bottom: 1rem; color: #ff6b6b;"></i>
+    <% if (searchQuery) { %>
+      <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">No results found</h2>
+      <p style="font-size: 1.1rem;">We couldn’t find any listings for "<%= searchQuery %>".</p>
+    <% } else { %>
+      <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">No listings available</h2>
+      <p style="font-size: 1.1rem;">Please check back later! New listings are coming soon.</p>
+    <% } %>
+  </div>
+<% } %>
 
   <% allListings.forEach(listing => { %>
     <a href="/listings/<%= listing._id %>" class="listing-link">
