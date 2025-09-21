@@ -20,7 +20,7 @@ const store = mongoStore.create({
     mongoUrl: process.env.ATLASDB_URL,
     touchAfter: 24 * 60 * 60, // time period in seconds
     crypto: {
-        secret: 'squirrel'
+        secret: process.env.SECRET
     }
 });
 
@@ -31,7 +31,7 @@ store.on("error", function (e) {
 // SESSION CONFIG
 const sessionOptions = {
     store: store,
-    secret: "mysupersecretcode",
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
