@@ -27,10 +27,14 @@
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
 </head>
 <body>
-<%- include("../includes/navbar.ejs") %>
+  <!-- Skip link for keyboard users -->
+  <a class="visually-hidden" href="#main-content" id="skip-to-content">Skip to content</a>
+  <%- include("../includes/navbar.ejs") %>
 <div class="container">
   <%- include("../includes/flash.ejs") %>
-  <%- body %>
+  <main id="main-content">
+    <%- body %>
+  </main>
 </div>
 
 
