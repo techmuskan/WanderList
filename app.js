@@ -16,33 +16,39 @@ const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 const ExpressError = require('./utils/ExpressError');
 
+// TRUST PROXY (needed for secure cookies behind proxy)
+if (process.env.NODE_ENV === "production") {
+    app.set('trust proxy', 1);
+}
+
+// MONGO STORE
 const store = mongoStore.create({
     mongoUrl: process.env.ATLASDB_URL,
-    touchAfter: 24 * 60 * 60, // time period in seconds
+    touchAfter: 24 * 60 * 60, // 24h
     crypto: {
         secret: process.env.SECRET
     }
 });
 
-store.on("error", function (e) {
+store.on("error", (e) => {
     console.log("SESSION STORE ERROR", e);
 });
 
 // SESSION CONFIG
 const sessionOptions = {
-    store: store,
+    store,
     secret: process.env.SECRET,
     resave: false,
-    saveUninitialized: false, // change from true to false
+    saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // HTTPS only
-        sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax', // cross-site cookie
-        expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 1 week
-        maxAge: 1000 * 60 * 60 * 24 * 7
+        secure: process.env.NODE_ENV === "production", // HTTPS only in prod
+        sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax',
+        maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
     }
 };
-
+app.use(session(sessionOptions));
+app.use(flash());
 
 // VIEW ENGINE
 app.engine('ejs', ejsMate);
@@ -54,10 +60,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride('_method'));
-app.use(session(sessionOptions));
-app.use(flash());
 
-// PASSPORT
+// PASSPORT CONFIG
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
@@ -69,24 +73,17 @@ app.use((req, res, next) => {
     res.locals.currentUser = req.user || null;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
-    res.locals.currentRoute = req.path;      // active navbar highlighting
-    res.locals.mapToken = process.env.MAP_TOKEN; // Mapbox token
-    res.locals.searchQuery = req.query.q || '';  // search input value
+    res.locals.currentRoute = req.path;
+    res.locals.mapToken = process.env.MAP_TOKEN;
+    res.locals.searchQuery = req.query.q || '';
     next();
 });
 
-// // MONGOOSE CONNECTION
-// mongoose.connect("mongodb://127.0.0.1:27017/WanderList")
-//     .then(() => console.log("✅ MongoDB Connected"))
-//     .catch(err => console.error("❌ MongoDB Error:", err));
-
-const dbURL = process.env.ATLASDB_URL;
-
 // MONGOOSE CONNECTION
+const dbURL = process.env.ATLASDB_URL;
 mongoose.connect(dbURL)
     .then(() => console.log("✅ MongoDB Connected"))
     .catch(err => console.error("❌ MongoDB Error:", err));
-
 
 // ROUTES
 const listingRouter = require('./routes/listing');
