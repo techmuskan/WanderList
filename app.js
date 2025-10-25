@@ -33,14 +33,16 @@ const sessionOptions = {
     store: store,
     secret: process.env.SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false, // change from true to false
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: process.env.NODE_ENV === "production", // HTTPS only
+        sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax', // cross-site cookie
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 1 week
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 };
+
 
 // VIEW ENGINE
 app.engine('ejs', ejsMate);
@@ -108,6 +110,7 @@ app.use((err, req, res, next) => {
 });
 
 // START SERVER
-app.listen(8080, () => {
-    console.log("🚀 Server started on http://localhost:8080");
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+    console.log(`🚀 Server started on port ${PORT}`);
 });
