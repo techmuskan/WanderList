@@ -21,13 +21,15 @@ module.exports.listingSchema = Joi.object({
     title: Joi.string().required(),
     description: Joi.string().required(),
     price: Joi.number().min(0).required(),
+    gstRate: Joi.number().min(0).max(1).optional(),
     location: Joi.string().required(),
     country: Joi.string().required(),
     category: Joi.string().valid(...categories).required(), // ✅ add this
+    imageUrl: Joi.string().uri().allow('').optional(),
     image: Joi.object({
       url: Joi.string().uri().allow('').optional()
     }).optional()
-  }).required()
+  }).unknown(true).required()
 });
 
 module.exports.reviewSchema = Joi.object({

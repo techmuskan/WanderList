@@ -4,47 +4,91 @@
 
 <style>
 /* =========================
-   Navbar General Styles
+   Navbar (Dashboard Theme)
 ========================= */
 .navbar {
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 1rem;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
 }
 
 .navbar-brand {
   font-size: 1.5rem;
-  font-weight: bold;
-  white-space: nowrap;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  color: #1b1a18 !important;
+}
+
+.brand-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: linear-gradient(120deg, rgba(247,213,122,0.35), rgba(45,139,144,0.2));
+  border: 1px solid rgba(0,0,0,0.06);
 }
 
 .navbar-nav .nav-link {
-  margin-right: 1rem;
-  padding: 0.5rem 0.8rem;
+  margin-right: 0.75rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
   text-align: center;
   white-space: nowrap;
+  color: #1b1a18 !important;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .navbar-nav .nav-link:last-child {
   margin-right: 0;
 }
 
+.navbar-nav .nav-link.active {
+  background: #1b1a18;
+  color: #fff !important;
+}
+
+.navbar-nav .nav-link:hover {
+  background: rgba(27,26,24,0.08);
+  color: #1b1a18 !important;
+}
+
+.nav-cta {
+  background: transparent;
+  color: #1b1a18 !important;
+  border-radius: 12px;
+  padding: 0.45rem 0.8rem;
+  box-shadow: none;
+  border: 1px solid rgba(0,0,0,0.12);
+}
+
+.nav-cta:hover {
+  background: rgba(27,26,24,0.08);
+}
+
 .search-input {
-  border-radius: 25px;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  min-width: 250px;
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-size: 0.95rem;
+  min-width: 240px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #fff;
 }
 
 .btn-search {
-  background-color: #fe424d;
+  background-color: #1b1a18;
   color: white;
-  border-radius: 25px;
+  border-radius: 999px;
   padding: 0.5rem 1rem;
   white-space: nowrap;
-  transition: background 0.3s;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 22px rgba(27,26,24,0.15);
 }
 
 .btn-search:hover {
-  background-color: #e63a42;
+  transform: translateY(-1px);
+  color: #fff;
 }
 
 .btn-search i {
@@ -111,7 +155,11 @@
   }
 
   .navbar-nav .nav-link {
-    margin: 0.3rem 0;
+    margin: 0.15rem 0;
+    border-radius: 12px;
+    width: 100%;
+    text-align: left;
+    padding: 0.4rem 0.6rem;
   }
 
   form.d-flex {
@@ -121,7 +169,21 @@
 
   .search-input, .btn-search {
     width: 100%;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .navbar-brand {
+    font-size: 1.2rem;
+  }
+
+  .brand-pill {
+    padding: 0.2rem 0.6rem;
+  }
+
+  .nav-cta {
+    width: 100%;
+    text-align: center;
+    padding: 0.4rem 0.6rem;
   }
 }
 
@@ -130,7 +192,7 @@
 ========================= */
 @media (max-width: 480px) {
   .navbar-brand {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 
   .navbar-nav .nav-link {
@@ -151,7 +213,9 @@
 
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/"><b>WanderList</b></a>
+    <a class="navbar-brand" href="/">
+      <span class="brand-pill"><i class="fa-solid fa-compass"></i>WanderList</span>
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
       aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -161,6 +225,7 @@
       <!-- Left links -->
       <div class="navbar-nav me-auto">
         <a class="nav-link <%= route === '/listings' ? 'active' : '' %>" href="/listings"><b>Explore</b></a>
+        <a class="nav-link <%= route === '/contact' ? 'active' : '' %>" href="/contact"><b>Contact</b></a>
       </div>
 
       <!-- Search bar -->
@@ -179,11 +244,12 @@
       <div class="navbar-nav ms-auto">
         <% if(currentUser) { %>
           <span class="nav-link text-center"><b>Welcome, <u><i><%= currentUser.username %></i></u></b></span>
-          <a class="nav-link <%= route === '/listings/new' ? 'active' : '' %>" href="/listings/new"><b>Share Your Spot</b></a>
+          <a class="nav-link <%= route === '/profile' ? 'active' : '' %>" href="/profile"><b>Profile</b></a>
+          <a class="nav-link nav-cta <%= route === '/listings/new' ? 'active' : '' %>" href="/listings/new"><b>Share Your Spot</b></a>
           <a class="nav-link" href="/logout"><b>Logout</b></a>
         <% } else { %>
           <a class="nav-link <%= route === '/signup' ? 'active' : '' %>" href="/signup"><b>SignUp</b></a>
-          <a class="nav-link <%= route === '/login' ? 'active' : '' %>" href="/login"><b>Login</b></a>
+          <a class="nav-link nav-cta <%= route === '/login' ? 'active' : '' %>" href="/login"><b>Login</b></a>
         <% } %>
       </div>
     </div>

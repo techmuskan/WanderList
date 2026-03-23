@@ -1,347 +1,589 @@
 <% layout("layouts/boilerplate") -%>
 
-<style>
-  :root {
-    --primary: #667eea;
-    --secondary: #764ba2;
-    --accent: #ffd700;
-    --bg-light: #f9f9fb;
-    --text-dark: #222;
-  }
-
-  body {
-    font-family: "Poppins", sans-serif;
-    background: var(--bg-light);
-    color: var(--text-dark);
-    overflow-x: hidden;
-  }
-
-  /* Hero */
-  .hero {
-    position: relative;
-    height: 90vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(120deg, var(--primary), var(--secondary));
-    overflow: hidden;
-    color: white;
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1), transparent 60%),
-                radial-gradient(circle at 80% 70%, rgba(255,255,255,0.15), transparent 70%);
-    animation: moveGlow 10s infinite alternate ease-in-out;
-  }
-
-  @keyframes moveGlow {
-    0% { transform: scale(1) translateY(0); }
-    100% { transform: scale(1.1) translateY(-20px); }
-  }
-
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 2rem;
-    animation: fadeInUp 1s ease-out forwards;
-  }
-
-  .hero h1 {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    font-weight: 800;
-    margin-bottom: 1.2rem;
-    letter-spacing: 1px;
-  }
-
-  .hero p {
-    font-size: clamp(1rem, 2.5vw, 1.3rem);
-    opacity: 0.95;
-    margin-bottom: 2.5rem;
-  }
-
-  .cta-button {
-    background: var(--accent);
-    color: #111;
-    padding: 1rem 2.8rem;
-    border-radius: 50px;
-    font-weight: 700;
-    text-decoration: none;
-    box-shadow: 0 6px 20px rgba(255,215,0,0.4);
-    transition: all 0.3s ease;
-  }
-
-  .cta-button:hover {
-    transform: translateY(-4px);
-    background: #ffef85;
-    box-shadow: 0 10px 30px rgba(255,215,0,0.6);
-  }
-
-  /* Section headers */
-  .section-header {
-    text-align: center;
-    margin-bottom: 3.5rem;
-  }
-
-  .section-header h2 {
-    font-size: clamp(2rem, 4vw, 2.8rem);
-    font-weight: 700;
-    margin-bottom: 0.8rem;
-    color: #222;
-  }
-
-  .section-header p {
-    color: #666;
-    max-width: 650px;
-    margin: 0 auto;
-    font-size: 1.1rem;
-  }
-
-  /* About Section */
-  .about-section {
-    background: #fff;
-    padding: 5rem 0;
-  }
-
-  .feature-card {
-    background: rgba(255,255,255,0.9);
-    border-radius: 20px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
-    padding: 2.5rem;
-    transition: all 0.3s ease;
-    text-align: center;
-    backdrop-filter: blur(10px);
-  }
-
-  .feature-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-  }
-
-  .feature-icon {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: white;
-    font-size: 2rem;
-    border-radius: 50%;
-    width: 75px;
-    height: 75px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.2rem;
-    transition: transform 0.3s ease;
-  }
-
-  .feature-card:hover .feature-icon {
-    transform: rotate(360deg);
-  }
-
-  .feature-card h3 {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: #222;
-    margin-bottom: 0.8rem;
-  }
-
-  .feature-card p {
-    color: #555;
-    line-height: 1.6;
-  }
-
-  /* Stats */
-  .stats-section {
-    background: linear-gradient(120deg, var(--primary), var(--secondary));
-    color: #fff;
-    padding: 4rem 0;
-  }
-
-  .stat-item {
-    text-align: center;
-    padding: 1.5rem;
-  }
-
-  .stat-item h4 {
-    font-size: 3rem;
-    font-weight: 800;
-    margin-bottom: 0.3rem;
-  }
-
-  .stat-item p {
-    font-size: 1.1rem;
-    opacity: 0.9;
-  }
-
-  /* Contact */
-  .contact-section {
-    padding: 5rem 0;
-    background: var(--bg-light);
-  }
-
-  .contact-item {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.06);
-    transition: all 0.3s ease;
-    margin-bottom: 1rem;
-  }
-
-  .contact-item:hover {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: white;
-    transform: translateX(10px);
-  }
-
-  .contact-item i {
-    font-size: 1.4rem;
-  }
-
-  .contact-item a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  /* Animations */
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .scroll-reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.8s ease;
-  }
-
-  .scroll-reveal.active {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  @media (max-width: 768px) {
-    .hero { height: 75vh; padding: 2rem; }
-  }
-</style>
-
-<!-- Hero -->
-<section class="hero">
-  <div class="hero-content">
-    <h1>Welcome to WanderList</h1>
-    <p>Your all-in-one travel discovery platform — explore, share, and connect with explorers worldwide.</p>
-    <a href="/listings" class="cta-button">Start Exploring</a>
-  </div>
-</section>
-
-<!-- About -->
-<section class="about-section">
+<section class="dashboard-shell full-bleed">
   <div class="container">
-    <div class="section-header scroll-reveal">
-      <h2>Why Choose WanderList?</h2>
-      <p>Experience the future of travel exploration with smart discovery, community insights, and real adventures.</p>
-    </div>
-    <div class="row g-4">
-      <div class="col-md-4 scroll-reveal">
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-map-location-dot"></i></div>
-          <h3>Smart Exploration</h3>
-          <p>Use intelligent recommendations to find hidden gems and trending destinations around the world.</p>
+    <div class="dashboard-grid">
+      <div>
+        <span class="greeting-pill"><i class="fa-solid fa-sparkles"></i><span id="greetingText">Welcome back</span></span>
+        <h1 class="dashboard-title">Your travel dashboard, tuned like a compass.</h1>
+        <p class="dashboard-lede">
+          Plan fast, pin inspirations, and build a trip that feels made for you. WanderList now works like a
+          creative studio for your next escape.
+        </p>
+        <div class="action-row">
+          <a href="/listings" class="btn-ink">Explore Destinations</a>
+          <a href="/listings/new" class="btn-outline">Share a Spot</a>
         </div>
       </div>
-      <div class="col-md-4 scroll-reveal">
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-upload"></i></div>
-          <h3>Share Instantly</h3>
-          <p>Post your adventures with ease and let your stories inspire thousands of travelers globally.</p>
+      <div class="panel-stack">
+        <div class="dashboard-card">
+          <div class="card-title">WanderPulse</div>
+          <p class="mb-2">Live signals from the community today.</p>
+        <div class="metric-grid">
+          <div class="metric-chip">
+            <h4 data-count="12840">0</h4>
+            <span>Spots mapped</span>
+          </div>
+          <div class="metric-chip">
+            <h4 data-count="762">0</h4>
+            <span>New reviews</span>
+          </div>
+          <div class="metric-chip">
+            <h4 data-count="148">0</h4>
+            <span>Trips planned</span>
+          </div>
         </div>
+        <p class="text-muted mt-3 small" id="pulseLine">Live stats from the community today.</p>
       </div>
-      <div class="col-md-4 scroll-reveal">
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-user-group"></i></div>
-          <h3>Travel Community</h3>
-          <p>Join a fast-growing travel network and connect with like-minded wanderers across the globe.</p>
+        <div class="dashboard-card">
+          <div class="card-title">Trip Lab</div>
+          <form class="planner-form" id="tripLabForm">
+            <input type="text" name="origin" placeholder="Starting city" required>
+            <select name="mood" required>
+              <option value="coastal">Coastal calm</option>
+              <option value="mountain">Mountain reset</option>
+              <option value="city">City pulse</option>
+              <option value="heritage">Heritage trail</option>
+              <option value="wild">Wild escape</option>
+            </select>
+            <select name="pace" required>
+              <option value="slow">Slow & soulful</option>
+              <option value="balanced">Balanced</option>
+              <option value="fast">Fast & active</option>
+            </select>
+            <button class="btn-ink" type="submit">Generate micro-itinerary</button>
+          </form>
+          <div class="planner-output" id="tripLabOutput">Pick a mood and let us sketch your next three days.</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Stats -->
-<section class="stats-section">
+<section class="section">
   <div class="container">
-    <div class="row">
-      <div class="col-md-4">
-        <div class="stat-item">
-          <h4 data-count="12000">0</h4>
-          <p>Destinations</p>
+    <div class="trust-strip scroll-reveal">
+      <div class="trust-item">
+        <span class="trust-icon"><i class="fa-solid fa-shield"></i></span>
+        <span>Secure‑ready checkout experience</span>
+      </div>
+      <div class="trust-item">
+        <span class="trust-icon"><i class="fa-solid fa-user-check"></i></span>
+        <span>Host profiles with community reviews</span>
+      </div>
+      <div class="trust-item">
+        <span class="trust-icon"><i class="fa-solid fa-headset"></i></span>
+        <span>Support when you need it</span>
+      </div>
+      <div class="trust-item">
+        <span class="trust-icon"><i class="fa-solid fa-clipboard-check"></i></span>
+        <span>Clear listing details and policies</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="section-title scroll-reveal">Explore by vibe</h2>
+    <p class="section-sub scroll-reveal">Filter the community picks and pin what feels right for this season.</p>
+    <div class="vibe-row" id="vibeRow"></div>
+    <div class="dest-grid" id="destGrid"></div>
+    <div class="d-flex justify-content-end mt-4">
+      <a class="btn-ink" href="/signup">See more</a>
+    </div>
+  </div>
+</section>
+
+<section class="section full-bleed">
+  <div class="container">
+    <div class="dashboard-card scroll-reveal">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div>
+          <h3 class="card-title mb-1">Roll the Dice</h3>
+          <p class="text-muted mb-0">Tap the dice and discover a fresh place every time.</p>
+        </div>
+        <button class="btn-ink" id="diceBtn" type="button">
+          <i class="fa-solid fa-dice me-2"></i>Tap Dice
+        </button>
+      </div>
+      <div class="row mt-4 align-items-stretch" id="diceResult"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section full-bleed">
+  <div class="container">
+    <div class="row g-4 align-items-stretch">
+      <div class="col-lg-7">
+        <div class="dashboard-card scroll-reveal">
+          <h3 class="card-title">My Pinboard</h3>
+          <p class="text-muted">Save ideas while you browse. This board stays with you.</p>
+          <div class="board" id="pinBoard">
+            <div class="board-item">No pins yet. Tap "Pin" on a destination.</div>
+          </div>
+          <button class="board-clear mt-3" id="clearPinsBtn" type="button">Clear board</button>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="stat-item">
-          <h4 data-count="65000">0</h4>
-          <p>Happy Travelers</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="stat-item">
-          <h4 data-count="200000">0</h4>
-          <p>Reviews Shared</p>
+      <div class="col-lg-5">
+        <div class="dashboard-card scroll-reveal">
+          <h3 class="card-title">Quick tools</h3>
+          <div class="tool-grid">
+            <div>
+              <strong>Budget tracker</strong>
+              <p class="text-muted mb-2">Set a target and see how it breaks down.</p>
+              <input class="form-control mb-2" id="budgetInput" type="number" min="100" placeholder="Total budget">
+              <button class="btn-ink" id="budgetBtn" type="button">Split budget</button>
+              <div class="planner-output mt-2" id="budgetOutput">Lodging, food, and fun split will appear here.</div>
+            </div>
+            <div>
+              <strong>Essentials checklist</strong>
+              <div id="checklist"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Contact -->
-<section class="contact-section">
+<section class="section">
   <div class="container">
-    <div class="section-header scroll-reveal">
-      <h2>Contact Us</h2>
-      <p>Let’s make your next journey unforgettable — we’re here to assist you every step of the way.</p>
-    </div>
-    <div class="contact-info scroll-reveal">
-      <div class="contact-item"><i class="fa-solid fa-phone"></i><a href="tel:+911234567890">+91 123-456-7890</a></div>
-      <div class="contact-item"><i class="fa-solid fa-envelope"></i><a href="mailto:contact@wanderlist.com">contact@wanderlist.com</a></div>
-      <div class="contact-item"><i class="fa-solid fa-location-dot"></i><span>Bhopal, Madhya Pradesh, India</span></div>
+    <div class="cta-band scroll-reveal">
+      <h2 class="section-title">Ready to publish your next discovery?</h2>
+      <p>Bring the community somewhere new and collect fresh stories on the map.</p>
+      <a class="btn-ink" href="/listings/new">Share Your Spot</a>
     </div>
   </div>
 </section>
 
 <script>
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.scroll-reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) entry.target.classList.add('active');
+  const revealNodes = document.querySelectorAll(".scroll-reveal");
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) entry.target.classList.add("active");
     });
-  }, { threshold: 0.15 });
-  reveals.forEach(r => observer.observe(r));
+  }, { threshold: 0.2 });
+  revealNodes.forEach(node => revealObserver.observe(node));
 
-  // Counter animation
-  const counters = document.querySelectorAll('[data-count]');
+  const greetingText = document.getElementById("greetingText");
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  greetingText.textContent = `${greeting}, explorer`;
+
+  const counters = document.querySelectorAll("[data-count]");
   const runCounter = (el) => {
-    const target = +el.dataset.count;
-    const step = target / 120;
+    const target = Number(el.dataset.count);
+    const step = Math.max(1, Math.floor(target / 120));
+    let current = 0;
     const update = () => {
-      let current = +el.innerText.replace(/,/g, '');
+      current += step;
       if (current < target) {
-        el.innerText = Math.ceil(current + step).toLocaleString();
+        el.textContent = current.toLocaleString();
         requestAnimationFrame(update);
       } else {
-        el.innerText = target.toLocaleString();
+        el.textContent = target.toLocaleString();
       }
     };
     update();
   };
   const counterObserver = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) runCounter(e.target);
+    entries.forEach(entry => {
+      if (entry.isIntersecting) runCounter(entry.target);
     });
   }, { threshold: 0.4 });
   counters.forEach(c => counterObserver.observe(c));
+  const isAuthed = <%- currentUser ? 'true' : 'false' %>;
+  let destinations = [];
+  let tripLabData = {};
+  let pins = [];
+  let checklistState = {};
+
+  const vibeLabels = {
+    all: "All vibes",
+    coastal: "Coastal calm",
+    mountain: "Mountain reset",
+    city: "City pulse",
+    heritage: "Heritage trail",
+    wild: "Wild escape"
+  };
+
+  const vibeRow = document.getElementById("vibeRow");
+  const destGrid = document.getElementById("destGrid");
+  let activeVibe = "all";
+
+  const renderVibes = () => {
+    vibeRow.innerHTML = "";
+    Object.entries(vibeLabels).forEach(([key, label]) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = `vibe-chip ${activeVibe === key ? "active" : ""}`;
+      chip.textContent = label;
+      chip.addEventListener("click", () => {
+        activeVibe = key;
+        renderVibes();
+        renderDestinations();
+      });
+      vibeRow.appendChild(chip);
+    });
+  };
+
+  const getMaxCards = () => {
+    const w = window.innerWidth;
+    if (w < 576) return 5;
+    if (w < 992) return 8;
+    return 10;
+  };
+
+  const renderDestinations = () => {
+      const filtered = activeVibe === "all"
+        ? destinations
+        : destinations.filter(dest => dest.vibe === activeVibe);
+    const maxCards = getMaxCards();
+    destGrid.innerHTML = "";
+    filtered.slice(0, maxCards).forEach(dest => {
+      const card = document.createElement("article");
+      card.className = "dest-card";
+      card.innerHTML = `
+        <span class="dest-tag">${dest.tag}</span>
+        <h4>${dest.name}</h4>
+        <div class="text-muted">${dest.country}</div>
+        <div class="text-muted small">${dest.location}</div>
+        <button class="pin-btn" type="button">Pin to board</button>
+      `;
+      card.querySelector(".pin-btn").addEventListener("click", () => addPin(dest));
+      destGrid.appendChild(card);
+    });
+  };
+
+  const diceBtn = document.getElementById("diceBtn");
+  const diceResult = document.getElementById("diceResult");
+  const renderDiceCard = (place, photo) => {
+    if (!place) {
+      diceResult.innerHTML = "<p class='text-muted'>No places available yet. Add a listing first.</p>";
+      return;
+    }
+    const imgUrl = photo?.url || place.imageUrl;
+    const credit = photo?.photographer
+      ? `<div class="text-muted small mt-2">Photo by <a href="${photo.photographerUrl}" target="_blank" rel="noopener">${photo.photographer}</a></div>`
+      : "";
+    const detailButtons = isAuthed
+      ? `<a class="btn-outline" href="/listings/${place.id}">View details</a>`
+      : `<div class="d-flex gap-2 flex-wrap">
+           <a class="btn-outline" href="/login">Login</a>
+           <a class="btn-ink" href="/signup">Sign up</a>
+         </div>`;
+    diceResult.innerHTML = `
+      <div class="col-lg-7">
+        <div class="dest-card h-100">
+          <span class="dest-tag">${place.tag}</span>
+          <h4>${place.name}</h4>
+          <div class="text-muted">${place.location}, ${place.country}</div>
+          <div class="text-muted small mt-2">Perfect for a ${place.vibe} vibe</div>
+          <div class="mt-3">${detailButtons}</div>
+          ${credit}
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="dashboard-card h-100">
+          <img src="${imgUrl}" alt="${place.name}" style="width:100%;height:220px;object-fit:cover;border-radius:16px;">
+        </div>
+      </div>
+    `;
+  };
+
+  const pinKey = "wanderlistPins";
+  const pinBoard = document.getElementById("pinBoard");
+  const clearPinsBtn = document.getElementById("clearPinsBtn");
+
+  const loadLocalPins = () => {
+    try {
+      return JSON.parse(localStorage.getItem(pinKey)) || [];
+    } catch (err) {
+      return [];
+    }
+  };
+
+  const saveLocalPins = (nextPins) => {
+    localStorage.setItem(pinKey, JSON.stringify(nextPins));
+  };
+
+  const showPinGuard = () => {
+    alert("Please login or sign up to pin destinations.");
+  };
+
+  const addPin = async (dest) => {
+    if (!isAuthed) {
+      showPinGuard();
+      return;
+    }
+    const response = await fetch("/dashboard/pins", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ listingId: dest.id })
+    });
+    if (response.ok) {
+      const data = await response.json();
+      if (!pins.find(pin => pin.id === data.pin.id)) {
+        pins.push(data.pin);
+      }
+      renderPins();
+    }
+  };
+
+  const removePin = async (id) => {
+    if (!isAuthed) {
+      showPinGuard();
+      return;
+    }
+    const response = await fetch(`/dashboard/pins/${id}`, { method: "DELETE" });
+    if (response.ok) {
+      pins = pins.filter(pin => pin.id !== id);
+      renderPins();
+    }
+  };
+
+  const renderPins = () => {
+    pinBoard.innerHTML = "";
+    if (pins.length === 0) {
+      pinBoard.innerHTML = "<div class='board-item'>No pins yet. Tap \"Pin\" on a destination.</div>";
+      return;
+    }
+    pins.forEach(pin => {
+      const row = document.createElement("div");
+      row.className = "board-item";
+      row.innerHTML = `
+        <span>${pin.name}, ${pin.country}</span>
+        <button class="board-clear" type="button">Remove</button>
+      `;
+      row.querySelector("button").addEventListener("click", () => removePin(pin.id));
+      pinBoard.appendChild(row);
+    });
+  };
+
+  clearPinsBtn.addEventListener("click", async () => {
+    if (!isAuthed) {
+      showPinGuard();
+      return;
+    }
+    await Promise.all(pins.map(pin => fetch(`/dashboard/pins/${pin.id}`, { method: "DELETE" })));
+    pins = [];
+    renderPins();
+  });
+
+  const tripLabForm = document.getElementById("tripLabForm");
+  const tripLabOutput = document.getElementById("tripLabOutput");
+
+  const moodCopy = {
+    coastal: ["Sunrise shoreline walk", "Seafood market lunch", "Golden hour on the pier"],
+    mountain: ["Forest trail warm-up", "Scenic ridge picnic", "Hot chai by the valley"],
+    city: ["Design district stroll", "Street food safari", "Jazz or rooftop night"],
+    heritage: ["Temple + bazaar loop", "Museum deep dive", "Storytelling cafe"],
+    wild: ["Waterfall chase", "Lakeside reset", "Night sky lookout"]
+  };
+
+  const countryKeywords = [
+    { key: 'united states', val: 'United States' },
+    { key: 'usa', val: 'United States' },
+    { key: 'u.s', val: 'United States' },
+    { key: 'us', val: 'United States' },
+    { key: 'india', val: 'India' },
+    { key: 'mexico', val: 'Mexico' },
+    { key: 'switzerland', val: 'Switzerland' },
+    { key: 'italy', val: 'Italy' },
+    { key: 'tanzania', val: 'Tanzania' },
+    { key: 'netherlands', val: 'Netherlands' },
+    { key: 'uk', val: 'United Kingdom' },
+    { key: 'united kingdom', val: 'United Kingdom' },
+    { key: 'uae', val: 'United Arab Emirates' },
+    { key: 'australia', val: 'Australia' },
+    { key: 'canada', val: 'Canada' },
+    { key: 'japan', val: 'Japan' }
+  ];
+
+  const cityToCountry = {
+    "new york": "United States",
+    "los angeles": "United States",
+    "miami": "United States",
+    "san francisco": "United States",
+    "malibu": "United States",
+    "delhi": "India",
+    "mumbai": "India",
+    "pune": "India",
+    "jaipur": "India",
+    "goa": "India",
+    "rishikesh": "India",
+    "udaipur": "India",
+    "coorg": "India",
+    "mathura": "India",
+    "amsterdam": "Netherlands",
+    "florence": "Italy",
+    "verbier": "Switzerland",
+    "cancun": "Mexico",
+    "serengeti": "Tanzania"
+  };
+
+  const inferCountryFromOrigin = (origin) => {
+    const o = origin.toLowerCase().trim();
+    if (!o) return '';
+    const byCountry = countryKeywords.find(c => o.includes(c.key));
+    if (byCountry) return byCountry.val;
+    const cityKey = Object.keys(cityToCountry).find(c => o.includes(c));
+    return cityKey ? cityToCountry[cityKey] : '';
+  };
+
+  const pickItinerary = (origin, mood) => {
+    const originLower = origin.toLowerCase().trim();
+    const preferredCountry = inferCountryFromOrigin(origin);
+    const moodDestinations = destinations.filter(d => d.vibe === mood || mood === 'all');
+    const sameCity = originLower
+      ? moodDestinations.filter(d =>
+          (d.location || '').toLowerCase().includes(originLower) ||
+          (d.country || '').toLowerCase().includes(originLower)
+        )
+      : [];
+    const sameCountry = preferredCountry
+      ? moodDestinations.filter(d => (d.country || '').toLowerCase() === preferredCountry.toLowerCase())
+      : [];
+    const pool = (sameCity.length ? sameCity : sameCountry.length ? sameCountry : moodDestinations);
+    return pool.slice(0, 3);
+  };
+
+  tripLabForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(tripLabForm);
+    const origin = formData.get("origin");
+    const mood = formData.get("mood");
+    const pace = formData.get("pace");
+    const picks = pickItinerary(origin || '', mood);
+    const basePlan = picks.length
+      ? [
+          `Arrive in ${picks[0].location} and check in at ${picks[0].name}`,
+          picks[1] ? `Signature moment near ${picks[1].location}` : "Signature experience",
+          picks[2] ? `Slow evening in ${picks[2].location}` : "Farewell moments"
+        ]
+      : (moodCopy[mood] || []);
+    const paceLine = pace === "fast"
+      ? "Packed days, minimal downtime."
+      : pace === "slow"
+      ? "Leave room to wander and linger."
+      : "A balanced flow with easy breaks.";
+    tripLabOutput.innerHTML = `
+      <strong>3-day sketch from ${origin}:</strong><br>
+      Day 1: ${basePlan[0] || "Arrival and local stroll"}<br>
+      Day 2: ${basePlan[1] || "Signature experience"}<br>
+      Day 3: ${basePlan[2] || "Farewell moments"}<br>
+      <em>${paceLine}</em>
+    `;
+  });
+
+  const budgetBtn = document.getElementById("budgetBtn");
+  const budgetInput = document.getElementById("budgetInput");
+  const budgetOutput = document.getElementById("budgetOutput");
+
+  budgetBtn.addEventListener("click", () => {
+    const total = Number(budgetInput.value);
+    if (!total || total < 100) {
+      budgetOutput.textContent = "Enter a budget of at least 100.";
+      return;
+    }
+    const lodging = Math.round(total * 0.45);
+    const food = Math.round(total * 0.3);
+    const fun = total - lodging - food;
+    budgetOutput.textContent = `Lodging: ${lodging} | Food: ${food} | Experiences: ${fun}`;
+  });
+
+  const checklistItems = [
+    "Passport or ID",
+    "Chargers + adapters",
+    "Weather layer",
+    "Offline map saved",
+    "Essential meds"
+  ];
+  const checklistEl = document.getElementById("checklist");
+
+  const renderChecklist = () => {
+    checklistEl.innerHTML = "";
+    checklistItems.forEach(item => {
+      const row = document.createElement("label");
+      row.className = "checklist-item";
+      const checked = Boolean(checklistState[item]);
+      row.innerHTML = `
+        <input type="checkbox" ${checked ? "checked" : ""}>
+        <span>${item}</span>
+      `;
+      row.querySelector("input").addEventListener("change", async (event) => {
+        checklistState[item] = event.target.checked;
+        if (isAuthed) {
+          await fetch("/dashboard/checklist", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ item, checked: event.target.checked })
+          });
+        } else {
+          localStorage.setItem("wanderlistChecklist", JSON.stringify(checklistState));
+        }
+      });
+      checklistEl.appendChild(row);
+    });
+  };
+
+  const loadDashboard = async () => {
+    try {
+      const response = await fetch("/dashboard/data");
+      if (response.ok) {
+        const data = await response.json();
+        destinations = data.destinations || [];
+        tripLabData = data.tripLab || {};
+        pins = data.pins || [];
+        checklistState = data.checklist || {};
+        const metrics = data.metrics || {};
+        if (metrics.listings) document.querySelector('[data-count="12840"]').dataset.count = metrics.listings;
+        if (metrics.reviews) document.querySelector('[data-count="762"]').dataset.count = metrics.reviews;
+        if (metrics.users) document.querySelector('[data-count="148"]').dataset.count = metrics.users;
+        const pulseLine = document.getElementById("pulseLine");
+        if (pulseLine && metrics.listings && metrics.reviews) {
+          pulseLine.textContent = `${metrics.listings} spots mapped · ${metrics.reviews} reviews logged · ${metrics.users || 0} explorers active`;
+        }
+        // Re-run counters after async data load
+        counters.forEach(c => {
+          c.textContent = "0";
+          runCounter(c);
+        });
+      }
+    } catch (err) {
+      destinations = [];
+    }
+
+    if (!isAuthed) {
+      pins = loadLocalPins();
+      try {
+        checklistState = JSON.parse(localStorage.getItem("wanderlistChecklist")) || {};
+      } catch (err) {
+        checklistState = {};
+      }
+    }
+    renderVibes();
+    renderDestinations();
+    renderPins();
+    renderChecklist();
+  };
+
+  loadDashboard();
+  diceBtn.addEventListener("click", async () => {
+    if (!destinations.length) return renderDiceCard(null);
+    const pick = destinations[Math.floor(Math.random() * destinations.length)];
+    const query = `${pick.location} ${pick.country}`;
+    try {
+      const resp = await fetch(`/api/pexels?q=${encodeURIComponent(query)}`);
+      if (resp.ok) {
+        const photo = await resp.json();
+        return renderDiceCard(pick, photo);
+      }
+    } catch (err) {}
+    renderDiceCard(pick);
+  });
+  window.addEventListener('resize', () => {
+    renderDestinations();
+  });
 </script>

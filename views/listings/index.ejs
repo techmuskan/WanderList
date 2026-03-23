@@ -1,8 +1,56 @@
 <% layout("layouts/boilerplate") -%>
+<% const pinnedSet = new Set(pinnedIds || []); %>
 
 <style>/* =====================
    Filters Container
 ===================== */
+#explore-hero {
+  background: linear-gradient(120deg, #fff7e6, #e7f6f4 55%, #fff7e6);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 24px;
+  padding: 2.2rem 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 18px 40px rgba(19,18,16,0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+#explore-hero::after {
+  content: "";
+  position: absolute;
+  right: -60px;
+  top: -60px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(247,213,122,0.35), transparent 60%);
+}
+
+#explore-hero h1 {
+  font-family: "Fraunces", serif;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  margin-bottom: 0.5rem;
+}
+
+#explore-hero .hero-sub {
+  color: #3d3c3a;
+  max-width: 640px;
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.hero-chip {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
 #filters {
   display: flex;
   flex-wrap: wrap; /* allow wrapping only if really needed */
@@ -117,6 +165,47 @@
   width: 100%;
 }
 
+.listing-card .card-body {
+  position: relative;
+}
+
+.tax-toggle-wrap {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+
+.tax-toggle-btn {
+  border-radius: 999px;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.wishlist-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border-radius: 999px;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.9);
+}
+
+.wishlist-btn.active {
+  background: #1b1a18;
+  color: #fff;
+  border-color: #1b1a18;
+}
+
 @media (min-width: 768px) and (max-width: 960px) {
   .search-input {
     min-width: 250px;
@@ -131,6 +220,29 @@
 }
 
 </style>
+
+<section id="explore-hero">
+  <h1>Find your next stay</h1>
+  <p class="hero-sub">Browse community‑rated spots, curated by vibe. Pick a filter or search by city.</p>
+  <div class="hero-meta">
+    <span class="hero-chip"><%= (allListings && allListings.length) ? allListings.length : 0 %> spots live</span>
+    <span class="hero-chip"><%= selectedCategory || "All" %> vibe</span>
+    <span class="hero-chip"><i class="fa-solid fa-shield me-1"></i>Secure‑ready checkout</span>
+    <span class="hero-chip"><i class="fa-solid fa-user-check me-1"></i>Community‑reviewed hosts</span>
+    <% if (searchQuery) { %>
+      <span class="hero-chip">Search: "<%= searchQuery %>"</span>
+    <% } %>
+  </div>
+  <div class="mt-3 d-flex flex-wrap gap-2 align-items-center">
+    <label class="text-muted small mb-0" for="sortSelect">Sort:</label>
+    <select id="sortSelect" class="form-select form-select-sm" style="max-width:220px;">
+      <option value="">Recommended</option>
+      <option value="newest" <%= selectedSort === "newest" ? "selected" : "" %>>Newest</option>
+      <option value="price_asc" <%= selectedSort === "price_asc" ? "selected" : "" %>>Price: Low to High</option>
+      <option value="price_desc" <%= selectedSort === "price_desc" ? "selected" : "" %>>Price: High to Low</option>
+    </select>
+  </div>
+</section>
 
 <!-- Collapse Toggle for Mobile -->
 <div class="d-md-none text-start mb-2">
@@ -204,10 +316,18 @@
       <div class="card col listing-card">
         <img src="<%= listing.image?.url || '/images/default.jpg' %>" class="card-img-top" alt="listing_image" style="height: 20rem; object-fit: cover;">
         <div class="card-body">
+          <button type="button" class="wishlist-btn <%= pinnedSet.has(listing._id.toString()) ? "active" : "" %>" data-id="<%= listing._id %>" title="Save">
+            <i class="<%= pinnedSet.has(listing._id.toString()) ? "fa-solid fa-heart" : "fa-regular fa-heart" %>"></i>
+          </button>
           <p class="card-text">
             <b><%= listing.title %></b><br>
-            &#8377;<%= listing.price.toLocaleString("en-IN") %>/night
-            <i class="tax-info">&nbsp;+18% GST</i>
+            &#8377;<span class="price-amount" data-base="<%= listing.price %>" data-gst="<%= (listing.gstRate ?? 0.18) %>"><%= listing.price.toLocaleString("en-IN") %></span>/night
+            <i class="tax-info">&nbsp;+<%= Math.round((listing.gstRate ?? 0.18) * 100) %>% GST</i>
+            <span class="tax-toggle-wrap">
+              <button type="button" class="btn btn-sm btn-outline-secondary tax-toggle-btn" title="Toggle tax view">
+                <i class="fa-solid fa-percent"></i>
+              </button>
+            </span>
           </p>
         </div>
       </div>
@@ -216,7 +336,80 @@
 </section>
 
 <script>
-  document.getElementById("flexSwitchCheckDefault").addEventListener("click", () => {
-    document.querySelectorAll(".tax-info").forEach(info => info.classList.toggle("d-inline"));
+  const isAuthed = <%- currentUser ? "true" : "false" %>;
+  const toggle = document.getElementById("flexSwitchCheckDefault");
+  const sortSelect = document.getElementById("sortSelect");
+  const updatePrices = (showTax) => {
+    document.querySelectorAll(".price-amount").forEach(el => {
+      const base = Number(el.dataset.base || 0);
+      const rate = Number(el.dataset.gst || 0.18);
+      const total = Math.round(base * (1 + rate));
+      el.textContent = showTax ? total.toLocaleString("en-IN") : base.toLocaleString("en-IN");
+    });
+    document.querySelectorAll(".tax-info").forEach(info => info.classList.toggle("d-inline", showTax));
+    document.querySelectorAll(".tax-toggle-btn").forEach(btn => {
+      btn.innerHTML = showTax ? '<i class="fa-solid fa-receipt"></i>' : '<i class="fa-solid fa-percent"></i>';
+      btn.dataset.state = showTax ? "tax" : "base";
+    });
+  };
+  toggle.addEventListener("click", () => {
+    updatePrices(toggle.checked);
+  });
+
+  document.querySelectorAll(".tax-toggle-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const card = btn.closest(".listing-card");
+      const priceEl = card?.querySelector(".price-amount");
+      const taxInfo = card?.querySelector(".tax-info");
+      if (!priceEl || !taxInfo) return;
+      const base = Number(priceEl.dataset.base || 0);
+      const rate = Number(priceEl.dataset.gst || 0.18);
+      const total = Math.round(base * (1 + rate));
+      const isTax = btn.dataset.state === "tax";
+      priceEl.textContent = isTax ? base.toLocaleString("en-IN") : total.toLocaleString("en-IN");
+      taxInfo.classList.toggle("d-inline", !isTax);
+      btn.dataset.state = isTax ? "base" : "tax";
+      btn.innerHTML = isTax ? '<i class="fa-solid fa-percent"></i>' : '<i class="fa-solid fa-receipt"></i>';
+    });
+  });
+
+  if (sortSelect) {
+    sortSelect.addEventListener("change", () => {
+      const url = new URL(window.location.href);
+      if (sortSelect.value) {
+        url.searchParams.set("sort", sortSelect.value);
+      } else {
+        url.searchParams.delete("sort");
+      }
+      window.location.href = url.toString();
+    });
+  }
+
+  document.querySelectorAll(".wishlist-btn").forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!isAuthed) {
+        alert("Please sign up or log in to save places.");
+        window.location.href = "/signup";
+        return;
+      }
+      const id = btn.dataset.id;
+      const isActive = btn.classList.contains("active");
+      try {
+        const resp = await fetch(isActive ? `/dashboard/pins/${id}` : "/dashboard/pins", {
+          method: isActive ? "DELETE" : "POST",
+          headers: isActive ? undefined : { "Content-Type": "application/json" },
+          body: isActive ? undefined : JSON.stringify({ listingId: id })
+        });
+        if (!resp.ok) throw new Error("wishlist_failed");
+        btn.classList.toggle("active", !isActive);
+        btn.innerHTML = !isActive ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-regular fa-heart"></i>';
+      } catch (err) {
+        console.error(err);
+        alert("Could not update wishlist. Please try again.");
+      }
+    });
   });
 </script>

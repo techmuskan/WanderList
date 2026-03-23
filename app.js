@@ -21,23 +21,50 @@ if (process.env.NODE_ENV === "production") {
     app.set('trust proxy', 1);
 }
 
-// MONGO STORE
-const store = mongoStore.create({
-    mongoUrl: process.env.ATLASDB_URL,
-    touchAfter: 24 * 60 * 60, // 24h
-    crypto: {
-        secret: process.env.SECRET
-    }
-});
+const sessionSecret = process.env.SECRET || "devsecret-change-me";
+const rawAtlasUrl = process.env.ATLASDB_URL || "";
+const envDbName = process.env.DB_NAME || "";
+const parsedDbName = (() => {
+    const match = rawAtlasUrl.match(/\/([^/?]+)(\?|$)/);
+    return match ? match[1] : "";
+})();
+const dbName = envDbName || parsedDbName || "WanderList";
+const isAtlasPlaceholder = /yourpassword123|<db_password>|<db_username>/i.test(rawAtlasUrl);
 
-store.on("error", (e) => {
-    console.log("SESSION STORE ERROR", e);
-});
+// DB URL (shared by app + session store)
+const dbURL = rawAtlasUrl && !isAtlasPlaceholder
+    ? rawAtlasUrl
+    : 'mongodb://127.0.0.1:27017/WanderList';
+
+if (!rawAtlasUrl || isAtlasPlaceholder) {
+    console.warn("⚠️  ATLASDB_URL missing/placeholder. Using local MongoDB for both app and session store.");
+}
+
+// Create a single mongoose connection promise and reuse for session store
+const mongooseConnectOptions = parsedDbName ? {} : { dbName };
+const mongooseConnectionPromise = mongoose.connect(dbURL, mongooseConnectOptions);
+
+const useMemoryStore = process.env.USE_MEMORY_STORE === "true";
+
+let store;
+if (useMemoryStore) {
+    console.warn("⚠️  Using in-memory session store. Sessions will reset on restart.");
+    store = new session.MemoryStore();
+} else {
+    store = mongoStore.create({
+        clientPromise: mongooseConnectionPromise.then(m => m.connection.getClient()),
+        dbName,
+        touchAfter: 24 * 60 * 60 // 24h
+    });
+    store.on("error", (e) => {
+        console.log("SESSION STORE ERROR", e);
+    });
+}
 
 // SESSION CONFIG
 const sessionOptions = {
     store,
-    secret: process.env.SECRET,
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -64,7 +91,25 @@ app.use(methodOverride('_method'));
 // PASSPORT CONFIG
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
+passport.use(new LocalStrategy({ usernameField: 'identifier' }, async (identifier, password, done) => {
+    try {
+        const user = await User.findOne({
+            $or: [{ username: identifier }, { email: identifier }]
+        });
+        if (!user) {
+            return done(null, false, { message: 'Invalid username/email or password.' });
+        }
+        user.authenticate(password, (err, userAuth, passwordErr) => {
+            if (err) return done(err);
+            if (passwordErr) {
+                return done(null, false, { message: 'Invalid username/email or password.' });
+            }
+            return done(null, userAuth);
+        });
+    } catch (err) {
+        return done(err);
+    }
+}));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
@@ -80,8 +125,7 @@ app.use((req, res, next) => {
 });
 
 // MONGOOSE CONNECTION
-const dbURL = process.env.ATLASDB_URL;
-mongoose.connect(dbURL)
+mongooseConnectionPromise
     .then(() => console.log("✅ MongoDB Connected"))
     .catch(err => console.error("❌ MongoDB Error:", err));
 
@@ -93,6 +137,8 @@ const usersRouter = require('./routes/user');
 app.use('/listings', listingRouter);
 app.use('/listings/:id/reviews', reviewRouter);
 app.use('/', usersRouter);
+// Fallback route to ensure forgot page is reachable
+app.get('/forgot', (req, res) => res.render('users/forgot'));
 
 // 404 HANDLER
 app.all('*', (req, res, next) => {
@@ -101,6 +147,9 @@ app.all('*', (req, res, next) => {
 
 // ERROR HANDLER
 app.use((err, req, res, next) => {
+    if (res.headersSent) {
+        return next(err);
+    }
     const { statusCode = 500 } = err;
     if (!err.message) err.message = "Something went wrong!";
     res.status(statusCode).render('error', { err });

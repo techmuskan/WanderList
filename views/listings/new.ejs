@@ -24,9 +24,16 @@
           <!-- Image Upload -->
           <div class="mb-3">
             <label for="image" class="form-label"><b>Upload Listing Image:</b></label>
-            <input id="imageUrlInput" type="file" name="listing[image]" class="form-control" required>
+            <input id="imageUrlInput" type="file" name="listing[image]" class="form-control">
             <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 100%; margin-top: 10px; border-radius: 8px;">
-            <div class="invalid-feedback">Please upload an image.</div>
+            <div class="invalid-feedback">Please upload an image or add a URL.</div>
+          </div>
+
+          <!-- Or Image URL -->
+          <div class="mb-3">
+            <label for="imageUrl" class="form-label"><b>Or add image URL:</b></label>
+            <input type="url" name="listing[imageUrl]" id="imageUrl" class="form-control" placeholder="https://...">
+            <div class="form-text">If you add a URL, file upload is optional.</div>
           </div>
 
           <!-- Price & Country -->
@@ -35,6 +42,11 @@
               <label for="price" class="form-label"><b>Enter price:</b></label>
               <input type="number" name="listing[price]" placeholder="Enter Price" class="form-control" required>
               <div class="invalid-feedback">Enter a valid price.</div>
+            </div>
+            <div class="mb-3 col-md-4">
+              <label for="gstRate" class="form-label"><b>GST Rate (%):</b></label>
+              <input type="number" step="0.01" min="0" max="100" name="listing[gstRate]" placeholder="18" class="form-control">
+              <div class="form-text">Enter GST percent for this place.</div>
             </div>
             <div class="mb-3 col-md-8">
               <label for="country" class="form-label"><b>Enter country:</b></label>
@@ -91,6 +103,15 @@
       const forms = document.querySelectorAll('.needs-validation');
       Array.from(forms).forEach(form => {
         form.addEventListener('submit', event => {
+          const fileInput = form.querySelector('input[type="file"][name="listing[image]"]');
+          const urlInput = form.querySelector('input[name="listing[imageUrl]"]');
+          const hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+          const hasUrl = urlInput && urlInput.value && urlInput.value.trim().length > 0;
+          if (!hasFile && !hasUrl) {
+            fileInput && fileInput.setCustomValidity("Please upload an image or provide a URL.");
+          } else {
+            fileInput && fileInput.setCustomValidity("");
+          }
           if (!form.checkValidity()) {
             event.preventDefault();
             event.stopPropagation();

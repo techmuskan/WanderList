@@ -1,21 +1,20 @@
-const cloudinary = require('cloudinary').v2;
-const{ cloudinaryStorage, CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary');
+const cloudinaryV2 = cloudinary.v2 || cloudinary;
 
-cloudinary.config({
+cloudinaryV2.config({
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.CLOUD_API_KEY,
     api_secret: process.env.CLOUD_API_SECRET
 });
 
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'Wanderlist_DEV',
-        allowerdFormats: ["png","jpg","jpeg","pdf"],
-    }
-})
+const legacyStorage = require('multer-storage-cloudinary');
+const storage = legacyStorage({
+    cloudinary: { v2: cloudinaryV2 },
+    folder: 'Wanderlist_DEV',
+    allowedFormats: ["png", "jpg", "jpeg", "pdf"]
+});
 
-module.exports= {
-    cloudinary,
+module.exports = {
+    cloudinary: cloudinaryV2,
     storage,
 }

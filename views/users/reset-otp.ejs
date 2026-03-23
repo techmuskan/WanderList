@@ -1,0 +1,140 @@
+<% layout("/layouts/boilerplate") %>
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-11 col-md-7 col-lg-5">
+        <div class="dashboard-card">
+          <span class="greeting-pill"><i class="fa-solid fa-sparkles"></i>OTP reset</span>
+          <h2 class="section-title">Reset Password with OTP</h2>
+          <p class="section-sub" id="otpStatus"
+             data-sent-at="<%= (typeof otpSentAt !== 'undefined' && otpSentAt) ? otpSentAt : '' %>"
+             data-expires-at="<%= (typeof otpExpiresAt !== 'undefined' && otpExpiresAt) ? otpExpiresAt : '' %>">OTP valid for 2 minutes.</p>
+          <form action="/reset-otp" method="POST" class="needs-validation mt-3" novalidate>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+              <div class="invalid-feedback">Please enter a valid email.</div>
+            </div>
+            <div class="mb-3">
+              <label for="otp" class="form-label">OTP Code</label>
+              <input type="text" class="form-control" id="otp" name="otp" required>
+              <div class="invalid-feedback">Please enter the OTP.</div>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">New Password</label>
+              <div class="input-group">
+                <input type="password" class="form-control" id="password" name="password" required>
+                <button class="btn btn-outline-secondary" type="button" id="toggleOtpPass" aria-label="Toggle password visibility">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback">Please enter a password.</div>
+            </div>
+            <div class="mb-3">
+              <label for="confirm" class="form-label">Confirm Password</label>
+              <div class="input-group">
+                <input type="password" class="form-control" id="confirm" name="confirm" required>
+                <button class="btn btn-outline-secondary" type="button" id="toggleOtpConfirm" aria-label="Toggle password visibility">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback">Please confirm your password.</div>
+            </div>
+            <button class="btn-ink w-100" type="submit">Update Password</button>
+          </form>
+          <form action="/resend-otp" method="POST" class="mt-3">
+            <input type="hidden" id="resendEmail" name="email">
+            <button class="btn btn-outline-dark w-100" id="resendBtn" type="submit">Resend OTP</button>
+            <small class="text-muted d-block text-center mt-2" id="resendTimer"></small>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const password = document.getElementById('password');
+  const confirm = document.getElementById('confirm');
+  const toggleOtpPass = document.getElementById('toggleOtpPass');
+  const toggleOtpConfirm = document.getElementById('toggleOtpConfirm');
+  const strengthText = document.createElement('small');
+  strengthText.className = 'text-muted d-block mt-1';
+  password.parentElement.appendChild(strengthText);
+
+  const emailInput = document.getElementById('email');
+  const resendEmail = document.getElementById('resendEmail');
+  const resendBtn = document.getElementById('resendBtn');
+  const resendTimer = document.getElementById('resendTimer');
+  const otpStatus = document.getElementById('otpStatus');
+
+  const checkStrength = (val) => {
+    const rules = [
+      /[a-z]/.test(val),
+      /[A-Z]/.test(val),
+      /[0-9]/.test(val),
+      /[^\w\s]/.test(val),
+      val.length >= 8
+    ];
+    const score = rules.filter(Boolean).length;
+    if (score <= 2) return { text: 'Weak password', color: '#d9534f' };
+    if (score === 3 || score === 4) return { text: 'Medium strength', color: '#f0ad4e' };
+    return { text: 'Strong password', color: '#5cb85c' };
+  };
+
+  password.addEventListener('input', () => {
+    const { text, color } = checkStrength(password.value);
+    strengthText.textContent = text;
+    strengthText.style.color = color;
+  });
+
+  toggleOtpPass.addEventListener('click', () => {
+    const isPwd = password.type === 'password';
+    password.type = isPwd ? 'text' : 'password';
+    toggleOtpPass.innerHTML = isPwd
+      ? '<i class="fa-regular fa-eye-slash"></i>'
+      : '<i class="fa-regular fa-eye"></i>';
+  });
+
+  toggleOtpConfirm.addEventListener('click', () => {
+    const isPwd = confirm.type === 'password';
+    confirm.type = isPwd ? 'text' : 'password';
+    toggleOtpConfirm.innerHTML = isPwd
+      ? '<i class="fa-regular fa-eye-slash"></i>'
+      : '<i class="fa-regular fa-eye"></i>';
+  });
+
+  const updateTimers = () => {
+    const email = emailInput.value.trim();
+    resendEmail.value = email;
+    if (!email) {
+      resendBtn.disabled = true;
+      resendTimer.textContent = '';
+      return;
+    }
+    const sentAt = Number(otpStatus.dataset.sentAt) || Number(localStorage.getItem(`otpSentAt:${email}`));
+    const expiresAt = Number(otpStatus.dataset.expiresAt) || Number(localStorage.getItem(`otpExpiresAt:${email}`));
+    const now = Date.now();
+    const resendIn = Math.max(0, 60 * 1000 - (now - sentAt));
+    if (resendIn > 0) {
+      resendBtn.disabled = true;
+      resendTimer.textContent = `Resend available in ${Math.ceil(resendIn / 1000)}s`;
+    } else {
+      resendBtn.disabled = false;
+      resendTimer.textContent = '';
+    }
+    if (expiresAt) {
+      const remaining = expiresAt - now;
+      if (remaining > 0) {
+        const mins = Math.floor(remaining / 60000);
+        const secs = Math.floor((remaining % 60000) / 1000);
+        otpStatus.textContent = `OTP expires in ${mins}m ${secs}s`;
+      } else {
+        otpStatus.textContent = 'OTP expired. Please resend.';
+      }
+    }
+  };
+
+  setInterval(updateTimers, 1000);
+  emailInput.addEventListener('input', updateTimers);
+</script>

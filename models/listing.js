@@ -9,6 +9,7 @@ const listingSchema = new Schema({
     filename: { type: String, default: "default" }
   },
   price: { type: Number, required: true, default: 0 },
+  gstRate: { type: Number, default: 0.18 },
   location: { type: String, default: "Location not specified" },
   country: { type: String, default: "Country not specified" },
   category: { type: String, enum: ["Trending", "Rooms", "Iconic Cities", "Mountains", "Castles", "Arctic Pools", "Camping", "Farms", "Snow", "Desserts", "Beachfront", "Tiny Homes"], default: "Trending" },

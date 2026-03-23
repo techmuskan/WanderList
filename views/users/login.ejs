@@ -1,26 +1,50 @@
 <% layout("/layouts/boilerplate") %>
-<div class="row mt-3">
-    <h1 class="col-6 offset-3 text-center">
-        Login to WanderList
-    </h1>
-    <div class="col-6 offset-3">
-        <form action="/login" method="POST" class="needs-validation" novalidate>
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-11 col-md-7 col-lg-5">
+        <div class="dashboard-card">
+          <span class="greeting-pill"><i class="fa-solid fa-sparkles"></i>Welcome back</span>
+          <h2 class="section-title">Login to WanderList</h2>
+          <p class="section-sub">Pick up where your last trip left off.</p>
+          <form action="/login" method="POST" class="needs-validation mt-3" novalidate>
             <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
-                <div class="invalid-feedback">Please provide a valid username.</div>
+              <label for="identifier" class="form-label">Username or Email</label>
+              <input type="text" class="form-control" id="identifier" name="identifier" required>
+              <div class="invalid-feedback">Please provide a valid username or email.</div>
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
+              <label for="password" class="form-label">Password</label>
+              <div class="input-group">
                 <input type="password" class="form-control" id="password" name="password" required>
-                <div class="invalid-feedback">Please provide a valid password.</div>
+                <button class="btn btn-outline-secondary" type="button" id="toggleLoginPass" aria-label="Toggle password visibility">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback">Please provide a valid password.</div>
             </div>
-            <button class="btn btn-success w-100">Login</button>
-        </form>
-
-        <!-- Add this line -->
-        <p class="mt-3 text-center">
+            <button class="btn-ink w-100" type="submit">Login</button>
+          </form>
+          <p class="mt-3 text-center">
             Don't have an account? <a href="/signup">Create one</a>
-        </p>
+          </p>
+          <p class="text-center">
+            <a href="/forgot">Forgot password?</a>
+          </p>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
+</section>
+
+<script>
+  const loginPass = document.getElementById('password');
+  const toggleLoginPass = document.getElementById('toggleLoginPass');
+  toggleLoginPass.addEventListener('click', () => {
+    const isPwd = loginPass.type === 'password';
+    loginPass.type = isPwd ? 'text' : 'password';
+    toggleLoginPass.innerHTML = isPwd
+      ? '<i class="fa-regular fa-eye-slash"></i>'
+      : '<i class="fa-regular fa-eye"></i>';
+  });
+</script>

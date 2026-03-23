@@ -1,0 +1,33 @@
+<% layout("/layouts/boilerplate") %>
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-11 col-md-7 col-lg-5">
+        <div class="dashboard-card">
+          <span class="greeting-pill"><i class="fa-solid fa-sparkles"></i>Password help</span>
+          <h2 class="section-title">Forgot Password</h2>
+          <p class="section-sub">Enter your email to get an OTP code.</p>
+          <form action="/forgot" method="POST" class="needs-validation mt-3" novalidate id="forgotForm">
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+              <div class="invalid-feedback">Please enter a valid email.</div>
+            </div>
+            <button class="btn-ink w-100" type="submit">Send OTP</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const forgotForm = document.getElementById('forgotForm');
+  forgotForm.addEventListener('submit', () => {
+    const email = document.getElementById('email').value.trim();
+    if (!email) return;
+    const now = Date.now();
+    localStorage.setItem(`otpSentAt:${email}`, String(now));
+    localStorage.setItem(`otpExpiresAt:${email}`, String(now + 2 * 60 * 1000));
+  });
+</script>

@@ -1,0 +1,53 @@
+<% layout("/layouts/boilerplate") %>
+<section class="section">
+  <div class="container">
+    <div class="dashboard-card">
+      <h2 class="section-title">My Profile</h2>
+      <p class="section-sub">Welcome, <%= user?.username %> · <%= user?.email %></p>
+    </div>
+
+    <div class="row mt-4 g-4">
+      <div class="col-lg-7">
+        <div class="dashboard-card">
+          <h3 class="card-title">My Listings</h3>
+          <% if (!myListings || myListings.length === 0) { %>
+            <p class="text-muted">No listings yet. Share a spot to get started.</p>
+          <% } else { %>
+            <div class="row row-cols-1 row-cols-md-2 g-3">
+              <% myListings.forEach(listing => { %>
+                <a href="/listings/<%= listing._id %>" class="listing-link">
+                  <div class="card listing-card">
+                    <img src="<%= listing.image?.url || '/images/default.jpg' %>" class="card-img-top" alt="listing_image">
+                    <div class="card-body">
+                      <p class="card-text">
+                        <b><%= listing.title %></b><br>
+                        &#8377;<%= listing.price?.toLocaleString("en-IN") || 0 %>/night
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              <% }) %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="dashboard-card">
+          <h3 class="card-title">Wishlist</h3>
+          <% const pins = user?.pinnedListings || []; %>
+          <% if (pins.length === 0) { %>
+            <p class="text-muted">No pinned destinations yet.</p>
+          <% } else { %>
+            <% pins.forEach(pin => { %>
+              <div class="board-item">
+                <span><%= pin.title %>, <%= pin.country %></span>
+                <a class="btn btn-sm btn-outline-secondary" href="/listings/<%= pin._id %>">View</a>
+              </div>
+            <% }) %>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

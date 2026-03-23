@@ -55,7 +55,16 @@
       <div class="card-body">
         <p><i>Owned by <%= listing.owner?.username || "Anonymous" %></i></p>
         <p><%= listing.description || "No description provided." %></p>
-        <p><strong>Price:</strong> &#8377;<%= listing.price?.toLocaleString("en-IN") || "0" %></p>
+        <p>
+          <strong>Price:</strong>
+          &#8377;<span id="showPrice" data-base="<%= listing.price || 0 %>" data-gst="<%= (listing.gstRate ?? 0.18) %>"><%= listing.price?.toLocaleString("en-IN") || "0" %></span>
+          <span class="text-muted">/night</span>
+          <span id="showTax" class="text-muted ms-1" style="display:none;">+<%= Math.round((listing.gstRate ?? 0.18) * 100) %>% GST</span>
+        </p>
+        <div class="form-check form-switch mb-3">
+          <input class="form-check-input" type="checkbox" id="showTaxToggle">
+          <label class="form-check-label" for="showTaxToggle">Display total after taxes</label>
+        </div>
         <p><strong>Location:</strong> <%= listing.location || "Not specified" %></p>
         <p><strong>Country:</strong> <%= listing.country || "Not specified" %></p>
         <p><strong>Category:</strong> <span class="badge bg-secondary category-badge"><%= listing.category || "Uncategorized" %></span></p>
@@ -139,3 +148,19 @@
 
   <% } %>
 </div>
+
+<script>
+  const showPrice = document.getElementById("showPrice");
+  const showTax = document.getElementById("showTax");
+  const showTaxToggle = document.getElementById("showTaxToggle");
+  if (showPrice && showTax && showTaxToggle) {
+    const basePrice = Number(showPrice.dataset.base || 0);
+    const rate = Number(showPrice.dataset.gst || 0.18);
+    const updateShowPrice = (withTax) => {
+      const total = Math.round(basePrice * (1 + rate));
+      showPrice.textContent = (withTax ? total : basePrice).toLocaleString("en-IN");
+      showTax.style.display = withTax ? "inline" : "none";
+    };
+    showTaxToggle.addEventListener("change", () => updateShowPrice(showTaxToggle.checked));
+  }
+</script>

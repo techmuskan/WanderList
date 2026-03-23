@@ -1,29 +1,76 @@
 <% layout("/layouts/boilerplate") %>
-<div class="row mt-3">
-    <h1 class="col-6 offset-3 text-center">SignUp on WanderList</h1>
-    <div class="col-6 offset-3">
-        <form action="/signup" method="POST" class="needs-validation" novalidate>
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-11 col-md-7 col-lg-5">
+        <div class="dashboard-card">
+          <span class="greeting-pill"><i class="fa-solid fa-sparkles"></i>Join the crew</span>
+          <h2 class="section-title">Create your account</h2>
+          <p class="section-sub">Save favorites, build pins, and share your spots.</p>
+          <form action="/signup" method="POST" class="needs-validation mt-3" novalidate>
             <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
-                <div class="invalid-feedback">Please provide a valid username.</div>
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="username" name="username" required>
+              <div class="invalid-feedback">Please provide a valid username.</div>
             </div>
             <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-                <div class="invalid-feedback">Please provide a valid email.</div>
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+              <div class="invalid-feedback">Please provide a valid email.</div>
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
+              <label for="password" class="form-label">Password</label>
+              <div class="input-group">
                 <input type="password" class="form-control" id="password" name="password" required>
-                <div class="invalid-feedback">Please provide a valid password.</div>
+                <button class="btn btn-outline-secondary" type="button" id="toggleSignupPass" aria-label="Toggle password visibility">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback">Please provide a valid password.</div>
             </div>
-            <button class="btn btn-success w-100">SignUp</button>
-        </form>
-
-        <!-- Add this line -->
-        <p class="mt-3 text-center">
+            <button class="btn-ink w-100" type="submit">Sign Up</button>
+          </form>
+          <p class="mt-3 text-center">
             Already have an account? <a href="/login">Login</a>
-        </p>
+          </p>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
+</section>
+
+<script>
+  const password = document.getElementById('password');
+  const toggleSignupPass = document.getElementById('toggleSignupPass');
+  const strengthText = document.createElement('small');
+  strengthText.className = 'text-muted d-block mt-1';
+  password.parentElement.appendChild(strengthText);
+
+  const checkStrength = (val) => {
+    const rules = [
+      /[a-z]/.test(val),
+      /[A-Z]/.test(val),
+      /[0-9]/.test(val),
+      /[^\w\s]/.test(val),
+      val.length >= 8
+    ];
+    const score = rules.filter(Boolean).length;
+    if (score <= 2) return { text: 'Weak password', color: '#d9534f' };
+    if (score === 3 || score === 4) return { text: 'Medium strength', color: '#f0ad4e' };
+    return { text: 'Strong password', color: '#5cb85c' };
+  };
+
+  password.addEventListener('input', () => {
+    const { text, color } = checkStrength(password.value);
+    strengthText.textContent = text;
+    strengthText.style.color = color;
+  });
+
+  toggleSignupPass.addEventListener('click', () => {
+    const isPwd = password.type === 'password';
+    password.type = isPwd ? 'text' : 'password';
+    toggleSignupPass.innerHTML = isPwd
+      ? '<i class="fa-regular fa-eye-slash"></i>'
+      : '<i class="fa-regular fa-eye"></i>';
+  });
+</script>

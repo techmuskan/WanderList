@@ -135,6 +135,86 @@ const sampleListings = [
     location: "Amsterdam",
     country: "Netherlands",
     owner: "muskan kawadkar"
+  },
+  {
+    title: "Sunrise at Mathura Ghats",
+    category: "Iconic Cities",
+    description: "A serene stay near the ghats with morning aarti views and peaceful river walks.",
+    image: { filename: "listingimage", url: "https://images.unsplash.com/photo-1548013146-72479768bada?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60" },
+    price: 900,
+    location: "Mathura",
+    country: "India",
+    owner: "muskan kawadkar"
+  },
+  {
+    title: "Jaipur Heritage Haveli",
+    category: "Castles",
+    description: "Pink City heritage haveli with rooftop views and traditional Rajasthani breakfasts.",
+    image: { filename: "listingimage", url: "https://images.unsplash.com/photo-1477587458883-47145ed94245?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60" },
+    price: 1400,
+    location: "Jaipur",
+    country: "India",
+    owner: "muskan kawadkar"
+  },
+  {
+    title: "Coorg Coffee Estate Retreat",
+    category: "Farms",
+    description: "Wake up to misty hills, coffee plantations, and cozy bonfires.",
+    image: { filename: "listingimage", url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60" },
+    price: 1100,
+    location: "Coorg",
+    country: "India",
+    owner: "muskan kawadkar"
+  },
+  {
+    title: "Rishikesh Riverside Camp",
+    category: "Camping",
+    description: "Riverside tents with yoga sunrise sessions and evening bonfires.",
+    image: { filename: "listingimage", url: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60" },
+    price: 700,
+    location: "Rishikesh",
+    country: "India",
+    owner: "muskan kawadkar"
+  },
+  {
+    title: "Goa Beach Shack",
+    category: "Beachfront",
+    description: "Steps from the beach, fresh seafood, and golden sunsets every evening.",
+    image: { filename: "listingimage", url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60" },
+    price: 1300,
+    location: "Goa",
+    country: "India",
+    owner: "muskan kawadkar"
+  },
+  {
+    title: "Manali Mountain Chalet",
+    category: "Mountains",
+    description: "Snowy peaks, cedar forests, and a warm fireplace for winter nights.",
+    image: { filename: "listingimage", url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60" },
+    price: 1600,
+    location: "Manali",
+    country: "India",
+    owner: "muskan kawadkar"
+  },
+  {
+    title: "Udaipur Lakeside Suite",
+    category: "Iconic Cities",
+    description: "Lakeside living with palace views and evening boat rides.",
+    image: { filename: "listingimage", url: "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60" },
+    price: 1900,
+    location: "Udaipur",
+    country: "India",
+    owner: "muskan kawadkar"
+  },
+  {
+    title: "Ladakh Stargazer Camp",
+    category: "Camping",
+    description: "High-altitude camping with crystal-clear night skies.",
+    image: { filename: "listingimage", url: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60" },
+    price: 1500,
+    location: "Ladakh",
+    country: "India",
+    owner: "muskan kawadkar"
   }
 ];
 

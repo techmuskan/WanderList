@@ -1,11 +1,12 @@
 const Listing = require('../models/listing');  
+const User = require('../models/user');
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
 const mapToken = process.env.MAP_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
 module.exports.index = async (req, res) => {
   try {
-    const { q, category } = req.query; 
+    const { q, category, sort } = req.query; 
     let filter = {};
 
     if (q) {
@@ -19,12 +20,23 @@ module.exports.index = async (req, res) => {
       filter.category = category;
     }
 
-    const allListings = await Listing.find(filter);
+    let query = Listing.find(filter);
+    if (sort === "price_asc") query = query.sort({ price: 1 });
+    if (sort === "price_desc") query = query.sort({ price: -1 });
+    if (sort === "newest") query = query.sort({ createdAt: -1 });
+    const allListings = await query;
+    let pinnedIds = [];
+    if (req.user) {
+      const user = await User.findById(req.user._id).select('pinnedListings').lean();
+      pinnedIds = (user?.pinnedListings || []).map(id => id.toString());
+    }
     res.render("listings/index", {
       allListings,
       currentUser: req.user,
       searchQuery: q || "",
-      selectedCategory: category || "All"
+      selectedCategory: category || "All",
+      selectedSort: sort || "",
+      pinnedIds
     });
   } catch (err) {
     console.log(err);
@@ -73,6 +85,11 @@ module.exports.create = async (req, res) => {
       if (geoData) geometry = geoData.geometry;
     }
 
+    // Normalize GST rate from percent to decimal
+    if (req.body?.listing?.gstRate) {
+      const pct = Number(req.body.listing.gstRate);
+      req.body.listing.gstRate = isNaN(pct) ? 0.18 : Math.max(0, Math.min(1, pct / 100));
+    }
     // Create listing with defaults and geometry
     const listing = new Listing({
       ...req.body.listing,
@@ -81,8 +98,15 @@ module.exports.create = async (req, res) => {
     });
 
     // Image handling
-    if (req.file?.path) {
-      listing.image = { url: req.file.path, filename: req.file.filename };
+    const imageUrl = req.body?.listing?.imageUrl?.trim();
+    const fileUrl = req.file?.path || req.file?.secure_url || req.file?.url;
+    const fileName = req.file?.filename || req.file?.public_id || "upload";
+    if (fileUrl) {
+      listing.image = { url: fileUrl, filename: fileName };
+    } else if (imageUrl) {
+      listing.image = { url: imageUrl, filename: "external" };
+    } else {
+      console.warn("⚠️  No image uploaded or URL provided for listing:", listing.title);
     }
 
     await listing.save();
@@ -123,6 +147,10 @@ module.exports.update = async (req, res) => {
   try {
     const { id } = req.params;
 
+    if (req.body?.listing?.gstRate) {
+      const pct = Number(req.body.listing.gstRate);
+      req.body.listing.gstRate = isNaN(pct) ? 0.18 : Math.max(0, Math.min(1, pct / 100));
+    }
     const updatedListing = await Listing.findByIdAndUpdate(
       id,
       { ...req.body.listing },
@@ -134,10 +162,22 @@ module.exports.update = async (req, res) => {
       return res.redirect('/listings');
     }
 
-    // Update image if uploaded
-    if (req.file?.path) {
-      updatedListing.image = { url: req.file.path, filename: req.file.filename };
+    // Update image if uploaded or URL provided
+    const imageUrl = req.body?.listing?.imageUrl?.trim();
+    const fileUrl = req.file?.path || req.file?.secure_url || req.file?.url;
+    const fileName = req.file?.filename || req.file?.public_id || "upload";
+    const hasFile = Boolean(fileUrl);
+    const hasUrl = Boolean(imageUrl);
+    console.log("Image update:", { id, hasFile, hasUrl, imageUrl: imageUrl || null, fileUrl: fileUrl || null });
+
+    if (hasFile) {
+      updatedListing.image = { url: fileUrl, filename: fileName };
       await updatedListing.save();
+    } else if (hasUrl) {
+      updatedListing.image = { url: imageUrl, filename: "external" };
+      await updatedListing.save();
+    } else {
+      console.warn("⚠️  No image update provided for listing:", updatedListing.title);
     }
 
     req.flash('success', 'Successfully updated listing!');

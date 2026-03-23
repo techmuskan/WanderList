@@ -55,6 +55,13 @@
         <img id="imagePreview" src="#" alt="New Image Preview" style="display:none; max-height:200px; margin-top:10px; border-radius:8px;">
       </div>
 
+      <!-- Or Image URL -->
+      <div class="mb-3">
+        <label for="imageUrl" class="form-label">Or add image URL:</label>
+        <input type="url" name="listing[imageUrl]" id="imageUrl" class="form-control" placeholder="https://...">
+        <div class="form-text">If you add a URL, file upload is optional.</div>
+      </div>
+
       <!-- Location -->
       <div class="mb-3">
         <label for="location" class="form-label">Location:</label>
@@ -68,6 +75,13 @@
           <label for="price" class="form-label">Price:</label>
           <input name="listing[price]" type="number" value="<%= listing.price || 0 %>" class="form-control" required>
           <div class="invalid-feedback">Enter a valid price.</div>
+        </div>
+
+        <!-- GST -->
+        <div class="mb-3 col-md-4">
+          <label for="gstRate" class="form-label">GST Rate (%):</label>
+          <input name="listing[gstRate]" type="number" step="0.01" min="0" max="100" value="<%= (listing.gstRate ?? 0.18) * 100 %>" class="form-control">
+          <div class="form-text">Enter GST percent for this place.</div>
         </div>
 
         <!-- Country -->
@@ -92,10 +106,19 @@
   // Image preview for new upload
   const imageInput = document.getElementById('imageInput');
   const imagePreview = document.getElementById('imagePreview');
+  const imageUrl = document.getElementById('imageUrl');
   imageInput.addEventListener('change', e => {
     const file = e.target.files[0];
     if(file) {
       imagePreview.src = URL.createObjectURL(file);
+      imagePreview.style.display = 'block';
+    }
+  });
+
+  imageUrl.addEventListener('input', e => {
+    const url = e.target.value.trim();
+    if (url) {
+      imagePreview.src = url;
       imagePreview.style.display = 'block';
     }
   });
@@ -106,6 +129,15 @@
     const forms = document.querySelectorAll('.needs-validation')
     Array.from(forms).forEach(form => {
       form.addEventListener('submit', event => {
+        const fileInput = form.querySelector('input[type="file"][name="listing[image]"]');
+        const urlInput = form.querySelector('input[name="listing[imageUrl]"]');
+        const hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+        const hasUrl = urlInput && urlInput.value && urlInput.value.trim().length > 0;
+        if (!hasFile && !hasUrl) {
+          fileInput && fileInput.setCustomValidity("Please upload an image or provide a URL.");
+        } else {
+          fileInput && fileInput.setCustomValidity("");
+        }
         if (!form.checkValidity()) {
           event.preventDefault()
           event.stopPropagation()

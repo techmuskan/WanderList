@@ -1,0 +1,83 @@
+<% layout("/layouts/boilerplate") %>
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-11 col-md-7 col-lg-5">
+        <div class="dashboard-card">
+          <span class="greeting-pill"><i class="fa-solid fa-sparkles"></i>Secure reset</span>
+          <h2 class="section-title">Reset Password</h2>
+          <p class="section-sub">Create a fresh password for your account.</p>
+          <form action="/reset/<%= token %>" method="POST" class="needs-validation mt-3" novalidate>
+            <div class="mb-3">
+              <label for="password" class="form-label">New Password</label>
+              <div class="input-group">
+                <input type="password" class="form-control" id="password" name="password" required>
+                <button class="btn btn-outline-secondary" type="button" id="toggleResetPass" aria-label="Toggle password visibility">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback">Please enter a password.</div>
+            </div>
+            <div class="mb-3">
+              <label for="confirm" class="form-label">Confirm Password</label>
+              <div class="input-group">
+                <input type="password" class="form-control" id="confirm" name="confirm" required>
+                <button class="btn btn-outline-secondary" type="button" id="toggleResetConfirm" aria-label="Toggle password visibility">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback">Please confirm your password.</div>
+            </div>
+            <button class="btn-ink w-100" type="submit">Update Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const password = document.getElementById('password');
+  const confirm = document.getElementById('confirm');
+  const toggleResetPass = document.getElementById('toggleResetPass');
+  const toggleResetConfirm = document.getElementById('toggleResetConfirm');
+  const strengthText = document.createElement('small');
+  strengthText.className = 'text-muted d-block mt-1';
+  password.parentElement.appendChild(strengthText);
+
+  const checkStrength = (val) => {
+    const rules = [
+      /[a-z]/.test(val),
+      /[A-Z]/.test(val),
+      /[0-9]/.test(val),
+      /[^\w\s]/.test(val),
+      val.length >= 8
+    ];
+    const score = rules.filter(Boolean).length;
+    if (score <= 2) return { text: 'Weak password', color: '#d9534f' };
+    if (score === 3 || score === 4) return { text: 'Medium strength', color: '#f0ad4e' };
+    return { text: 'Strong password', color: '#5cb85c' };
+  };
+
+  password.addEventListener('input', () => {
+    const { text, color } = checkStrength(password.value);
+    strengthText.textContent = text;
+    strengthText.style.color = color;
+  });
+
+  toggleResetPass.addEventListener('click', () => {
+    const isPwd = password.type === 'password';
+    password.type = isPwd ? 'text' : 'password';
+    toggleResetPass.innerHTML = isPwd
+      ? '<i class="fa-regular fa-eye-slash"></i>'
+      : '<i class="fa-regular fa-eye"></i>';
+  });
+
+  toggleResetConfirm.addEventListener('click', () => {
+    const isPwd = confirm.type === 'password';
+    confirm.type = isPwd ? 'text' : 'password';
+    toggleResetConfirm.innerHTML = isPwd
+      ? '<i class="fa-regular fa-eye-slash"></i>'
+      : '<i class="fa-regular fa-eye"></i>';
+  });
+</script>

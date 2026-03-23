@@ -7,6 +7,19 @@ const UserSchema = new Schema({
         type: String,
         required: true,
         unique: true
+    },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
+    resetPasswordOtp: String,
+    resetPasswordOtpExpires: Date,
+    resetPasswordOtpLastSent: Date,
+    pinnedListings: [
+        { type: Schema.Types.ObjectId, ref: 'Listing' }
+    ],
+    checklist: {
+        type: Map,
+        of: Boolean,
+        default: {}
     }
 });
 

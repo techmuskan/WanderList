@@ -1,33 +1,49 @@
 <footer id="site-footer" class="fade-footer">
   <div class="footer-container">
-    <!-- About Section -->
-    <div class="footer-section">
+    <!-- Brand -->
+    <div class="footer-section brand">
       <h5 class="footer-title">WanderList</h5>
       <p class="footer-text">
-        Discover amazing places, connect with hosts, and share your experiences. Your adventure starts here.
+        Curated stays, city pulses, and slow escapes — built for modern explorers.
       </p>
+      <div class="footer-badges">
+        <span class="badge-pill">Handpicked</span>
+        <span class="badge-pill">Community‑rated</span>
+        <span class="badge-pill">Secure</span>
+      </div>
     </div>
 
-    <!-- Quick Links -->
-    <div class="footer-section center">
-      <h5 class="footer-title">Quick Links</h5>
+    <!-- Links -->
+    <div class="footer-section">
+      <h5 class="footer-title">Explore</h5>
       <ul class="footer-links">
         <li><a href="/listings">All Listings</a></li>
-        <li><a href="/signup">Sign Up</a></li>
+        <li><a href="/listings?category=Beachfront">Beachfront</a></li>
+        <li><a href="/listings?category=Mountains">Mountains</a></li>
+        <li><a href="/listings?category=Iconic%20Cities">Iconic Cities</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-section">
+      <h5 class="footer-title">Account</h5>
+      <ul class="footer-links">
+        <li><a href="/signup">Create account</a></li>
         <li><a href="/login">Login</a></li>
+        <li><a href="/forgot">Reset password</a></li>
         <li><a href="/contact">Contact</a></li>
       </ul>
     </div>
 
-    <!-- Social Section -->
-    <div class="footer-section center">
-      <h5 class="footer-title">Follow Us</h5>
+    <!-- Social -->
+    <div class="footer-section">
+      <h5 class="footer-title">Follow</h5>
       <div class="social-icons">
-        <a href="#" class="social-icon"><i class="fa-brands fa-facebook"></i></a>
-        <a href="#" class="social-icon"><i class="fa-brands fa-twitter"></i></a>
-        <a href="#" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
-        <a href="#" class="social-icon"><i class="fa-brands fa-linkedin"></i></a>
+        <a href="https://www.facebook.com" class="social-icon" aria-label="Facebook" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="https://twitter.com" class="social-icon" aria-label="X" target="_blank" rel="noopener"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="https://www.instagram.com" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://www.linkedin.com" class="social-icon" aria-label="LinkedIn" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin-in"></i></a>
       </div>
+      <p class="footer-text tiny">Weekly drops, trail tips, and host stories.</p>
     </div>
   </div>
 
@@ -39,28 +55,19 @@
 </footer>
 
 <style>
-  /* Base Layout */
-  html, body {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100%;
-    font-family: Arial, sans-serif;
-  }
-
-  main {
-    flex: 1;
-  }
-
   /* Footer Base */
   #site-footer {
-    background: linear-gradient(135deg, #1e1e1e, #2c2c2c);
+    background:
+      radial-gradient(circle at 10% 0%, rgba(247,213,122,0.18), transparent 35%),
+      radial-gradient(circle at 90% 20%, rgba(45,139,144,0.18), transparent 40%),
+      linear-gradient(135deg, #1b1a18, #2b2a27 60%, #1b1a18);
     color: #fff;
-    padding: 60px 40px;
-    box-shadow: 0 -4px 15px rgba(0,0,0,0.4);
-    flex-shrink: 0;
+    padding: 36px 28px;
+    box-shadow: 0 -6px 18px rgba(0,0,0,0.24);
     width: 100%;
+    z-index: 1000;
   }
+
 
   .footer-container {
     max-width: 1200px;
@@ -68,12 +75,16 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 20px;
+    gap: 18px 28px;
   }
 
   .footer-section {
-    flex: 1 1 250px;
-    min-width: 250px;
+    flex: 1 1 210px;
+    min-width: 210px;
+  }
+
+  .footer-section.brand {
+    flex: 1.2 1 260px;
   }
 
   .center {
@@ -81,21 +92,47 @@
   }
 
   .footer-title {
-    color: #ff6b6b;
-    margin-bottom: 10px;
+    color: #f7d57a;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+    font-size: 1.05rem;
   }
 
   .footer-text {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     line-height: 1.5;
-    color: #ccc;
+    color: #d6d6d6;
+  }
+
+  .footer-text.tiny {
+    font-size: 0.78rem;
+    color: #bdbdbd;
+    margin-top: 10px;
+  }
+
+  .footer-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .badge-pill {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    letter-spacing: 0.2px;
   }
 
   /* Links */
   .footer-links {
     list-style: none;
     padding: 0;
-    font-size: 0.9rem;
+    font-size: 0.86rem;
+    margin: 0;
   }
 
   .footer-links li {
@@ -109,7 +146,7 @@
   }
 
   footer a:hover {
-    color: #ff6b6b;
+    color: #f7d57a;
   }
 
   /* Social */
@@ -126,20 +163,20 @@
 
   .social-icon:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 20px rgba(255,107,107,0.6);
+    box-shadow: 0 6px 22px rgba(247,213,122,0.45);
     border-radius: 50%;
   }
 
   /* Divider and Bottom */
   hr {
-    border-color: #333;
-    margin: 30px 0;
+    border-color: #2f2f2f;
+    margin: 18px 0;
   }
 
   .footer-bottom {
     text-align: center;
-    font-size: 0.8rem;
-    color: #aaa;
+    font-size: 0.78rem;
+    color: #a9a9a9;
   }
 
   /* Fade Animation */
@@ -157,7 +194,7 @@
   /* Responsive Design */
   @media (max-width: 768px) {
     #site-footer {
-      padding: 40px 20px;
+      padding: 20px 14px;
     }
 
     .footer-container {
@@ -167,12 +204,13 @@
     }
 
     .footer-title {
-      font-size: 1.1rem;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
     }
 
     .footer-text,
     .footer-links {
-      font-size: 0.85rem;
+      font-size: 0.78rem;
     }
 
     .social-icons {
@@ -180,13 +218,26 @@
     }
 
     hr {
-      margin: 20px 0;
+      margin: 14px 0;
+    }
+
+    .footer-section {
+      min-width: auto;
+      width: 100%;
+    }
+
+    .footer-badges {
+      justify-content: center;
+    }
+
+    .footer-links li {
+      margin-bottom: 4px;
     }
   }
 
   @media (max-width: 480px) {
     #site-footer {
-      padding: 25px 15px;
+      padding: 22px 14px;
     }
 
     .footer-title {
