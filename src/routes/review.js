@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router({ mergeParams: true }); // access :id from listings
 const wrapAsync = require('../utils/wrapAsync');
 const ExpressError = require('../utils/ExpressError');
-const { reviewSchema } = require("../schema");
 const Review = require('../models/review');
 const Listing = require('../models/listing');
 const { isLoggedIn, validateReview, isReviewAuthor } = require('../middleware');

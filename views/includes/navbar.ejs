@@ -15,7 +15,7 @@
 }
 
 .navbar-brand {
-  font-size: 1.35rem;
+  font-size: 1.1rem;
   font-weight: 800;
   letter-spacing: 0.2px;
   color: #0f172a !important;
@@ -60,16 +60,17 @@
 }
 
 .nav-cta {
-  background: #0f172a;
-  color: #fff !important;
+  background: transparent;
+  color: #0f172a !important;
   border-radius: 10px;
-  padding: 0.45rem 0.85rem;
-  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.16);
-  border: 1px solid rgba(15, 23, 42, 0.2);
+  padding: 0.4rem 0.75rem;
+  box-shadow: none;
+  border: none;
 }
 
 .nav-cta:hover {
-  filter: brightness(1.05);
+  background: rgba(15, 23, 42, 0.06);
+  color: #0f172a !important;
 }
 
 .search-input {
@@ -251,7 +252,7 @@
 
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/">
+    <a class="navbar-brand" href="/" aria-label="WanderList">
       <span class="brand-pill"><i class="fa-solid fa-compass"></i>WanderList</span>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
