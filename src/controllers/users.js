@@ -166,6 +166,40 @@ module.exports.profilePage = async (req, res) => {
     res.render('users/profile', { user, myListings });
 };
 
+module.exports.updateProfile = async (req, res) => {
+    const { username, email } = req.body;
+    const nextUsername = (username || "").trim();
+    const nextEmail = (email || "").trim().toLowerCase();
+
+    if (!nextUsername || nextUsername.length < 3) {
+        req.flash('error', 'Username must be at least 3 characters.');
+        return res.redirect('/profile');
+    }
+    if (!nextEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nextEmail)) {
+        req.flash('error', 'Please enter a valid email address.');
+        return res.redirect('/profile');
+    }
+
+    const usernameTaken = await User.findOne({ username: nextUsername, _id: { $ne: req.user._id } }).lean();
+    if (usernameTaken) {
+        req.flash('error', 'That username is already taken.');
+        return res.redirect('/profile');
+    }
+    const emailTaken = await User.findOne({ email: nextEmail, _id: { $ne: req.user._id } }).lean();
+    if (emailTaken) {
+        req.flash('error', 'That email is already in use.');
+        return res.redirect('/profile');
+    }
+
+    await User.findByIdAndUpdate(req.user._id, {
+        username: nextUsername,
+        email: nextEmail
+    });
+
+    req.flash('success', 'Profile updated.');
+    res.redirect('/profile');
+};
+
 module.exports.addPin = async (req, res) => {
     const { listingId } = req.body;
     if (!listingId) return res.status(400).json({ error: "listingId is required" });

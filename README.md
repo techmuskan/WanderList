@@ -13,6 +13,7 @@ This README documents how to set up, run and develop the project locally.
 - Image uploads (Cloudinary)
 - Location display using Mapbox
 - Server-side validation with Joi
+- Pinboard to save favorite destinations
 
 ## Requirements
 
@@ -34,10 +35,10 @@ This README documents how to set up, run and develop the project locally.
 3. Start the app in development mode
 
 	```powershell
-	npm start
+	npm run dev
 	```
 
-4. Open http://localhost:3000 in your browser (default port configured in `app.js`)
+4. Open http://localhost:8080 in your browser (default port configured in `app.js`)
 
 ## Environment variables
 
@@ -50,6 +51,7 @@ Create a `.env` file at the project root and add the following keys (example nam
 - CLOUD_API_SECRET - Cloudinary API secret
 - MAP_TOKEN - Mapbox public token
 - NODE_ENV - set to `production` in production deployments (optional)
+- USE_MEMORY_STORE - set to `true` to use in-memory sessions (not recommended for production)
 
 Example `.env` (do not commit to source control):
 
@@ -65,20 +67,20 @@ NODE_ENV=development
 
 ## Project structure
 
-- `app.js` — main Express application
-- `controllers/` — route handler logic
-- `models/` — Mongoose schemas (Listing, Review, User)
-- `routes/` — Express routers
+- `src/app.js` — main Express application
+- `src/controllers/` — route handler logic
+- `src/models/` — Mongoose schemas (Listing, Review, User)
+- `src/routes/` — Express routers
 - `views/` — EJS templates
 - `public/` — static assets (CSS, client JS, images)
-- `middleware.js` — custom middleware (e.g. auth, validation)
-- `cloudConfig.js` — Cloudinary configuration
-- `schema.js` — Joi validation schemas
+- `src/middleware/` — custom middleware (e.g. auth, validation)
+- `src/config/` — app configuration (Cloudinary, Joi schemas)
 - `init/` — optional seed data or init scripts
 
 ## Scripts
 
-- `npm start` — starts the server using `npx nodemon app.js` (development)
+- `npm run dev` — starts the server using nodemon (development)
+- `npm start` — starts the server using node (production)
 - `npm test` — placeholder test script (no tests configured)
 
 You can also run the app directly with `node app.js` but nodemon is convenient in development.
@@ -88,6 +90,18 @@ You can also run the app directly with `node app.js` but nodemon is convenient i
 - The app uses `connect-mongo` to store sessions in MongoDB when `ATLASDB_URL` is provided.
 - Image uploading uses `multer` + Cloudinary; `cloudConfig.js` reads Cloudinary credentials from environment variables.
 - Map and geocoding features rely on Mapbox tokens (`MAP_TOKEN`).
+
+## Deployment
+
+This app is ready for standard Node.js hosting (Render, Railway, Fly.io, etc.). Use these guidelines:
+
+1. Set `NODE_ENV=production`.
+2. Ensure `ATLASDB_URL` points to your hosted MongoDB instance.
+3. Set all required secrets (`SECRET`, Cloudinary, Mapbox).
+4. Use the default `npm start` command (runs `node app.js`).
+5. Make sure the hosting provider supplies `PORT` (the app listens on `process.env.PORT`).
+
+If your hosting platform does not provide HTTPS by default, you must add it before using `NODE_ENV=production` because session cookies are marked `secure`.
 
 ## Troubleshooting
 

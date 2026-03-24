@@ -5,7 +5,7 @@
   "name": "wanderlist",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "src/app.js",
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.16.2",
     "accepts": "^1.3.8",
@@ -121,7 +121,8 @@
     "whatwg-url": "^14.2.0"
   },
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "keywords": [],
   "author": "MUSKAN KAWADKAR",

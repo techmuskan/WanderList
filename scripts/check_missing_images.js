@@ -1,6 +1,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const Listing = require('../models/listing');
+const Listing = require('../src/models/listing');
 
 const rawAtlasUrl = process.env.ATLASDB_URL || '';
 const envDbName = process.env.DB_NAME || '';

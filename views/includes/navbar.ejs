@@ -4,39 +4,40 @@
 
 <style>
 /* =========================
-   Navbar (Dashboard Theme)
+   Navbar (Clean SaaS)
 ========================= */
 .navbar {
-  padding: 0.8rem 1rem;
-  background: rgba(255, 255, 255, 0.82);
+  padding: 0.75rem 1.1rem;
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
 }
 
 .navbar-brand {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 800;
-  letter-spacing: 0.3px;
-  color: #1b1a18 !important;
+  letter-spacing: 0.2px;
+  color: #0f172a !important;
 }
 
 .brand-pill {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.3rem 0.75rem;
+  padding: 0.28rem 0.75rem;
   border-radius: 999px;
-  background: linear-gradient(120deg, rgba(247,213,122,0.35), rgba(45,139,144,0.2));
-  border: 1px solid rgba(0,0,0,0.06);
+  background: rgba(37,99,235,0.1);
+  border: 1px solid rgba(37, 99, 235, 0.2);
 }
 
 .navbar-nav .nav-link {
-  margin-right: 0.75rem;
-  padding: 0.45rem 0.8rem;
-  border-radius: 999px;
+  margin-right: 0;
+  padding: 0.4rem 0.75rem;
+  border-radius: 10px;
   text-align: center;
   white-space: nowrap;
-  color: #1b1a18 !important;
+  color: #0f172a !important;
   transition: background 0.2s ease, color 0.2s ease;
 }
 
@@ -44,46 +45,50 @@
   margin-right: 0;
 }
 
+.navbar-nav {
+  gap: 0.4rem;
+}
+
 .navbar-nav .nav-link.active {
-  background: #1b1a18;
-  color: #fff !important;
+  background: rgba(15, 23, 42, 0.08);
+  color: #0f172a !important;
 }
 
 .navbar-nav .nav-link:hover {
-  background: rgba(27,26,24,0.08);
-  color: #1b1a18 !important;
+  background: rgba(15, 23, 42, 0.06);
+  color: #0f172a !important;
 }
 
 .nav-cta {
-  background: transparent;
-  color: #1b1a18 !important;
-  border-radius: 12px;
-  padding: 0.45rem 0.8rem;
-  box-shadow: none;
-  border: 1px solid rgba(0,0,0,0.12);
+  background: #0f172a;
+  color: #fff !important;
+  border-radius: 10px;
+  padding: 0.45rem 0.85rem;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.16);
+  border: 1px solid rgba(15, 23, 42, 0.2);
 }
 
 .nav-cta:hover {
-  background: rgba(27,26,24,0.08);
+  filter: brightness(1.05);
 }
 
 .search-input {
   border-radius: 999px;
-  padding: 0.55rem 1rem;
+  padding: 0.5rem 0.9rem;
   font-size: 0.95rem;
   min-width: 240px;
-  border: 1px solid rgba(0,0,0,0.08);
+  border: 1px solid rgba(15, 23, 42, 0.12);
   background: #fff;
 }
 
 .btn-search {
-  background-color: #1b1a18;
+  background: #0f172a;
   color: white;
-  border-radius: 999px;
-  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  padding: 0.5rem 0.9rem;
   white-space: nowrap;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 10px 22px rgba(27,26,24,0.15);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
 }
 
 .btn-search:hover {
@@ -93,6 +98,39 @@
 
 .btn-search i {
   margin-right: 0.5rem;
+}
+
+.profile-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.pill-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #0f172a;
+  border: 1px solid rgba(15, 23, 42, 0.25);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  line-height: 1;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.pill-avatar:hover {
+  filter: brightness(1.05);
+}
+
+.profile-pill:hover {
+  background: transparent !important;
 }
 
 /* =========================
@@ -243,9 +281,18 @@
       <!-- Right links -->
       <div class="navbar-nav ms-auto">
         <% if(currentUser) { %>
-          <span class="nav-link text-center"><b>Welcome, <u><i><%= currentUser.username %></i></u></b></span>
-          <a class="nav-link <%= route === '/profile' ? 'active' : '' %>" href="/profile"><b>Profile</b></a>
-          <a class="nav-link nav-cta <%= route === '/listings/new' ? 'active' : '' %>" href="/listings/new"><b>Share Your Spot</b></a>
+          <a class="nav-link profile-pill <%= route === '/profile' ? 'active' : '' %>" href="/profile" aria-label="Profile">
+            <% 
+              const initials = (currentUser.username || "U")
+                .trim()
+                .split(/\s+/)
+                .slice(0, 2)
+                .map(part => part[0]?.toUpperCase())
+                .join("");
+            %>
+            <span class="pill-avatar"><%= initials || "U" %></span>
+          </a>
+          <a class="nav-link <%= route === '/listings/new' ? 'active' : '' %>" href="/listings/new"><b>Share Your Spot</b></a>
           <a class="nav-link" href="/logout"><b>Logout</b></a>
         <% } else { %>
           <a class="nav-link <%= route === '/signup' ? 'active' : '' %>" href="/signup"><b>SignUp</b></a>

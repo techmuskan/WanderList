@@ -5,7 +5,7 @@ const Listing = require('../models/listing');
 const { isLoggedIn, saveRedirectUrl, isOwner, validateListing } = require('../middleware');
 const listingController = require('../controllers/listings');   
 const multer = require('multer');
-const { storage } = require('../cloudConfig');
+const { storage } = require('../config/cloudConfig');
 const upload = multer({ storage });
 
 const uploadSingle = (req, res, next) => {

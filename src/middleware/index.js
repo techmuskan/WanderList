@@ -1,8 +1,8 @@
-const Listing = require('./models/listing');  // <-- Add this import
-const { listingSchema } = require("./schema.js");
-const ExpressError = require('./utils/ExpressError');
-const { reviewSchema } = require("./schema.js");
-const Review = require('./models/review');  // <-- Add this import
+const Listing = require('../models/listing');
+const { listingSchema } = require("../config/schema");
+const ExpressError = require('../utils/ExpressError');
+const { reviewSchema } = require("../config/schema");
+const Review = require('../models/review');
 
 module.exports.isOwner = async (req, res, next) => {
     const { id } = req.params;

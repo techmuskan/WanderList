@@ -185,7 +185,7 @@
   padding: 0;
 }
 
-.wishlist-btn {
+.pinboard-btn {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -200,7 +200,7 @@
   background: rgba(255,255,255,0.9);
 }
 
-.wishlist-btn.active {
+.pinboard-btn.active {
   background: #1b1a18;
   color: #fff;
   border-color: #1b1a18;
@@ -316,7 +316,7 @@
       <div class="card col listing-card">
         <img src="<%= listing.image?.url || '/images/default.jpg' %>" class="card-img-top" alt="listing_image" style="height: 20rem; object-fit: cover;">
         <div class="card-body">
-          <button type="button" class="wishlist-btn <%= pinnedSet.has(listing._id.toString()) ? "active" : "" %>" data-id="<%= listing._id %>" title="Save">
+          <button type="button" class="pinboard-btn <%= pinnedSet.has(listing._id.toString()) ? "active" : "" %>" data-id="<%= listing._id %>" title="Pin">
             <i class="<%= pinnedSet.has(listing._id.toString()) ? "fa-solid fa-heart" : "fa-regular fa-heart" %>"></i>
           </button>
           <p class="card-text">
@@ -386,7 +386,7 @@
     });
   }
 
-  document.querySelectorAll(".wishlist-btn").forEach(btn => {
+  document.querySelectorAll(".pinboard-btn").forEach(btn => {
     btn.addEventListener("click", async (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -403,12 +403,12 @@
           headers: isActive ? undefined : { "Content-Type": "application/json" },
           body: isActive ? undefined : JSON.stringify({ listingId: id })
         });
-        if (!resp.ok) throw new Error("wishlist_failed");
+        if (!resp.ok) throw new Error("pinboard_failed");
         btn.classList.toggle("active", !isActive);
         btn.innerHTML = !isActive ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-regular fa-heart"></i>';
       } catch (err) {
         console.error(err);
-        alert("Could not update wishlist. Please try again.");
+        alert("Could not update pinboard. Please try again.");
       }
     });
   });

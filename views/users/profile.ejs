@@ -1,53 +1,108 @@
 <% layout("/layouts/boilerplate") %>
 <section class="section">
   <div class="container">
-    <div class="dashboard-card">
-      <h2 class="section-title">My Profile</h2>
-      <p class="section-sub">Welcome, <%= user?.username %> · <%= user?.email %></p>
-    </div>
+    <% const pins = user?.pinnedListings || []; %>
+    <% const listingCount = myListings ? myListings.length : 0; %>
+    <% const pinCount = pins.length; %>
 
-    <div class="row mt-4 g-4">
-      <div class="col-lg-7">
-        <div class="dashboard-card">
-          <h3 class="card-title">My Listings</h3>
-          <% if (!myListings || myListings.length === 0) { %>
-            <p class="text-muted">No listings yet. Share a spot to get started.</p>
-          <% } else { %>
-            <div class="row row-cols-1 row-cols-md-2 g-3">
-              <% myListings.forEach(listing => { %>
-                <a href="/listings/<%= listing._id %>" class="listing-link">
-                  <div class="card listing-card">
-                    <img src="<%= listing.image?.url || '/images/default.jpg' %>" class="card-img-top" alt="listing_image">
-                    <div class="card-body">
-                      <p class="card-text">
-                        <b><%= listing.title %></b><br>
-                        &#8377;<%= listing.price?.toLocaleString("en-IN") || 0 %>/night
-                      </p>
-                    </div>
-                  </div>
-                </a>
-              <% }) %>
-            </div>
-          <% } %>
+    <div class="profile-hero dashboard-card">
+      <div class="profile-identity">
+        <div class="profile-avatar">
+          <span><%= (user?.username || "U").slice(0,1).toUpperCase() %></span>
+        </div>
+        <div>
+          <h2 class="section-title">Profile Hub</h2>
+          <p class="section-sub mb-2">Welcome back, <%= user?.username %> · <%= user?.email %></p>
+          <div class="profile-actions">
+            <a href="/listings/new" class="btn btn-primary">Share a spot</a>
+            <a href="/listings" class="btn btn-outline-primary">Explore listings</a>
+          </div>
         </div>
       </div>
+      <div class="profile-stats">
+        <div class="stat-pill">
+          <h4><%= listingCount %></h4>
+          <span>Listings shared</span>
+        </div>
+        <div class="stat-pill">
+          <h4><%= pinCount %></h4>
+          <span>Pins saved</span>
+        </div>
+        <div class="stat-pill">
+          <h4><%= listingCount + pinCount %></h4>
+          <span>Moments curated</span>
+        </div>
+      </div>
+    </div>
 
-      <div class="col-lg-5">
-        <div class="dashboard-card">
-          <h3 class="card-title">Wishlist</h3>
-          <% const pins = user?.pinnedListings || []; %>
-          <% if (pins.length === 0) { %>
-            <p class="text-muted">No pinned destinations yet.</p>
-          <% } else { %>
+    <div class="profile-grid mt-4">
+      <div class="dashboard-card">
+        <div class="section-head">
+          <h3 class="card-title">My Listings</h3>
+          <span class="text-muted small">Your hosted or shared stays</span>
+        </div>
+        <% if (!myListings || myListings.length === 0) { %>
+          <p class="text-muted">No listings yet. Share a spot to get started.</p>
+        <% } else { %>
+          <div class="row row-cols-1 row-cols-md-2 g-3">
+            <% myListings.forEach(listing => { %>
+              <a href="/listings/<%= listing._id %>" class="listing-link">
+                <div class="card listing-card">
+                  <img src="<%= listing.image?.url || '/images/default.jpg' %>" class="card-img-top" alt="listing_image">
+                  <div class="card-body">
+                    <p class="card-text">
+                      <b><%= listing.title %></b><br>
+                      &#8377;<%= listing.price?.toLocaleString("en-IN") || 0 %>/night
+                    </p>
+                  </div>
+                </div>
+              </a>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="section-head">
+          <h3 class="card-title">Pinboard</h3>
+          <span class="text-muted small">Your saved destinations</span>
+        </div>
+        <% if (pins.length === 0) { %>
+          <p class="text-muted">No pinned destinations yet.</p>
+        <% } else { %>
+          <div class="pinboard-list">
             <% pins.forEach(pin => { %>
-              <div class="board-item">
+              <div class="board-item pinboard-item">
                 <span><%= pin.title %>, <%= pin.country %></span>
                 <a class="btn btn-sm btn-outline-secondary" href="/listings/<%= pin._id %>">View</a>
               </div>
             <% }) %>
-          <% } %>
-        </div>
+          </div>
+        <% } %>
       </div>
+    </div>
+
+    <div class="dashboard-card profile-edit mt-4">
+      <div class="section-head">
+        <div>
+          <h3 class="card-title mb-1">Welcome, <%= user?.username %></h3>
+          <span class="text-muted small">Update your profile details below.</span>
+        </div>
+        <span class="badge badge-pill">Profile</span>
+      </div>
+      <form action="/profile" method="post" class="profile-form">
+        <div>
+          <label class="form-label">Display name</label>
+          <input class="form-control" name="username" value="<%= user?.username || '' %>" required minlength="3" />
+        </div>
+        <div>
+          <label class="form-label">Email</label>
+          <input class="form-control" name="email" type="email" value="<%= user?.email || '' %>" required />
+        </div>
+        <div class="profile-form-actions">
+          <button class="btn btn-primary" type="submit">Save changes</button>
+        </div>
+      </form>
     </div>
   </div>
 </section>

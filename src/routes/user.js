@@ -19,6 +19,7 @@ router.post('/dashboard/checklist', isLoggedIn, wrapAsync(userController.updateC
 
 // Profile
 router.get('/profile', isLoggedIn, wrapAsync(userController.profilePage));
+router.post('/profile', isLoggedIn, wrapAsync(userController.updateProfile));
 
 router.route("/signup")
 .get(userController.userRegister)  // Register Route
